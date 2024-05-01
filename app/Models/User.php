@@ -43,6 +43,12 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'created_at' => 'datetime:Y-m-d h:i:s',
+            'updated_at' => 'datetime:Y-m-d h:i:s',
         ];
+    }
+
+    public function isAdmin() : bool {
+        return ($this->roles->contains('name', '==', 'admin'));
     }
 }
