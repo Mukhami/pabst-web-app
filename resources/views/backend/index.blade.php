@@ -1095,3 +1095,9 @@
 </div>
 
 @endsection
+
+@section('scripts')
+    <script src="{{ asset('backend/assets/js/chart.min.js') }}"></script>
+    <script src="{{ asset('backend/assets/js/chart-area-demo.js') }}"></script>
+    <script src="{{ asset('backend/assets/js/chart-bar-demo.js') }}"></script>
+@endsection

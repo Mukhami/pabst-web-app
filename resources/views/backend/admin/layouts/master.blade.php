@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="{{ asset('backend/assets/js/litepicker.js') }}" />
     <script data-search-pseudo-elements defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/js/all.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet">
+    @yield('styles')
 </head>
 
 <body class="nav-fixed">
@@ -27,14 +29,59 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="{{ asset('backend/assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('backend/assets/js/scripts.js') }}"></script>
-    <script src="{{ asset('backend/assets/js/chart.min.js') }}"></script>
-    <script src="{{ asset('backend/assets/js/chart-area-demo.js') }}"></script>
-    <script src="{{ asset('backend/assets/js/chart-bar-demo.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
     <script src="{{ asset('backend/assets/js/datatables-simple-demo.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/bundle.js" crossorigin="anonymous"></script>
     <script src="{{ asset('backend/assets/js/litepicker.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    @if (session('error'))
+        <script>
+            toastr["error"]("{{ session('error') }}", "Sorry, something went wrong", {
+                closeButton: true,
+                progressBar: true,
+                timeOut: 10000
+            });
+        </script>
+    @elseif(session('success'))
+        <script>
+            toastr["success"]("{{ session('success') }}", "Success", {
+                closeButton: true,
+                progressBar: true,
+                timeOut: 10000
+            });
+        </script>
+    @elseif(session('status'))
+        <script>
+            console.log("{{ session('status') }}");
+            toastr["success"]("{{ session('status') }}", "Success", {
+                closeButton: true,
+                progressBar: true,
+                timeOut: 10000
+            });
+        </script>
+    @elseif(session('warning'))
+        <script>
+            toastr["warning"]("{{ session('warning') }}", "Warning", {
+                closeButton: true,
+                progressBar: true,
+                timeOut: 10000
+            });
+        </script>
+    @elseif(session('info'))
+        <script>
+            toastr["info"]("{{ session('info') }}", "Info", {
+                closeButton: true,
+                progressBar: true,
+                timeOut: 10000
+            });
+        </script>
+    @endif
+    @yield('scripts')
+
+
 </body>
 </html>
