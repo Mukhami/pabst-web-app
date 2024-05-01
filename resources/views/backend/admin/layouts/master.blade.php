@@ -7,7 +7,7 @@
     <title>{{ $title }}</title>
     <link rel="stylesheet" href="{{ asset('backend/assets/css/styles.css') }}">
     <link rel="icon" type="image/x-icon" href="{{ asset('backend/assets/img/favicon.png') }}" />
-    <link rel="stylesheet" href="{{ asset('backend/assets/css/simple-datatables.min.css') }}" />
+{{--    <link rel="stylesheet" href="{{ asset('backend/assets/css/simple-datatables.min.css') }}" />--}}
     <link rel="stylesheet" href="{{ asset('backend/assets/js/litepicker.js') }}" />
     <script data-search-pseudo-elements defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/js/all.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js" crossorigin="anonymous"></script>
@@ -26,7 +26,7 @@
             @include('backend.admin.layouts.inc.admin-footer')
         </div>
     </div>
-    
+
     <script src="{{ asset('backend/assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('backend/assets/js/scripts.js') }}"></script>
     <script src="{{ asset('backend/assets/js/chart.min.js') }}"></script>
