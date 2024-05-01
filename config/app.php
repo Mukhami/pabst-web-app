@@ -123,4 +123,49 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | System Permissions
+    |--------------------------------------------------------------------------
+    |
+    | Here is a list of all the permissions used within the system
+    |
+    |
+    */
+    'permissions' => [
+        //users module
+        'users.users.browse',
+        'users.users.read',
+        'users.users.edit',
+        'users.users.add',
+        'users.users.delete',
+
+        'users.roles.browse',
+        'users.roles.read',
+        'users.roles.edit',
+        'users.roles.add',
+        'users.roles.delete',
+
+        //picklists module
+        'picklists.picklists.browse',
+        'picklists.picklists.read',
+        'picklists.picklists.edit',
+        'picklists.picklists.add',
+        'picklists.picklists.delete',
+
+        'picklists.picklist-items.browse',
+        'picklists.picklist-items.read',
+        'picklists.picklist-items.edit',
+        'picklists.picklist-items.add',
+        'picklists.picklist-items.delete',
+
+        //matter requests module
+        'matters.requests.browse',
+        'matters.requests.read',
+        'matters.requests.edit',
+        'matters.requests.add',
+        'matters.requests.delete',
+    ]
+
 ];

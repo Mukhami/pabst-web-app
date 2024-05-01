@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Backend\AdminController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -8,14 +8,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::prefix('admin')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'index'])
-        ->middleware(['auth', 'verified'])
-        ->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 });
 
 Route::middleware('auth')->group(function () {
