@@ -2,19 +2,19 @@
 
 namespace App\Http\Requests;
 
-use App\Models\User;
+use App\Models\MatterType;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class UpdateUserRequest extends FormRequest
+class UpdateMatterTypeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): Response
     {
-        return Gate::authorize('update', User::class);
+        return Gate::authorize('update', MatterType::class);
     }
 
     /**
@@ -26,9 +26,7 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
-            'email' => 'required|email|unique:users,email,'.$this->route('user')->id,
-            'roles' => 'required|array',
-            'roles.*' => 'exists:roles,id',
+            'description' => 'required|string|max:300'
         ];
     }
 }

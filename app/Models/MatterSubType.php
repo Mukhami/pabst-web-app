@@ -7,16 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class PicklistItem extends Model
+class MatterSubType extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'label',
+        'name',
         'description',
-        'identifier',
-        'sequence',
-        'is_system',
+        'key',
         'status',
     ];
 
@@ -29,8 +27,8 @@ class PicklistItem extends Model
         ];
     }
 
-    public function picklist(): BelongsTo
+    public function matter_type(): BelongsTo
     {
-        return $this->belongsTo(Picklist::class);
+        return $this->belongsTo(MatterType::class);
     }
 }

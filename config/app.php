@@ -147,18 +147,18 @@ return [
         'users.roles.add',
         'users.roles.delete',
 
-        //picklists module
-        'picklists.picklists.browse',
-        'picklists.picklists.read',
-        'picklists.picklists.edit',
-        'picklists.picklists.add',
-        'picklists.picklists.delete',
+        //matter types module
+        'matter-types.matter-types.browse',
+        'matter-types.matter-types.read',
+        'matter-types.matter-types.edit',
+        'matter-types.matter-types.add',
+        'matter-types.matter-types.delete',
 
-        'picklists.picklist-items.browse',
-        'picklists.picklist-items.read',
-        'picklists.picklist-items.edit',
-        'picklists.picklist-items.add',
-        'picklists.picklist-items.delete',
+        'matter-types.matter-subtypes.browse',
+        'matter-types.matter-subtypes.read',
+        'matter-types.matter-subtypes.edit',
+        'matter-types.matter-subtypes.add',
+        'matter-types.matter-subtypes.delete',
 
         //matter requests module
         'matters.requests.browse',
@@ -166,6 +166,8 @@ return [
         'matters.requests.edit',
         'matters.requests.add',
         'matters.requests.delete',
+
+        'matters.requests.approve'
     ]
 
 ];

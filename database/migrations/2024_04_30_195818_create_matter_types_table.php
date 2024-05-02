@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('picklists', function (Blueprint $table) {
+        Schema::create('matter_types', function (Blueprint $table) {
             $table->id();
-            $table->string('label', 50)->index();
+            $table->string('key', 50)->unique()->index();
+            $table->string('name', 50)->index();
             $table->text('description')->nullable();
-            $table->string('identifier', 100)->index();
-            $table->integer('default_item')->nullable();
-            $table->boolean('is_system')->default(false);
+            $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('picklists');
+        Schema::dropIfExists('matter_types');
     }
 };

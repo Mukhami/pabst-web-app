@@ -11,22 +11,22 @@
     <div class="container-xl px-4 mt-n10">
         <div class="card card-header-actions mx-auto mb-4">
             <div class="card-header">
-                {{__('Users')}}
+                {{__('Matter Types')}}
                 <div>
-                    <a class="btn btn-primary btn-icon mr-2" href="{{ route('users.create') }}">
+                    <a class="btn btn-primary btn-icon mr-2" href="{{ route('matter-types.create') }}">
                         <i data-feather="plus"></i>
                     </a>
                 </div>
             </div>
             <div class="card-body">
-                <table id="usersDataTable" class="table table-bordered">
+                <table id="matterTypesDataTable" class="table table-bordered">
                     <thead>
                     <tr>
                         <th>#</th>
                         <th>Name</th>
-                        <th>Email</th>
-                        <th>Roles</th>
+                        <th>Description</th>
                         <th>Status</th>
+                        <th>Sub Types Count</th>
                         <th>Created At</th>
                         <th>Updated At</th>
                         <th>Actions</th>
@@ -36,9 +36,9 @@
                     <tr>
                         <th>#</th>
                         <th>Name</th>
-                        <th>Email</th>
-                        <th>Roles</th>
+                        <th>Description</th>
                         <th>Status</th>
+                        <th>Sub Types Count</th>
                         <th>Created At</th>
                         <th>Updated At</th>
                         <th>Actions</th>
@@ -61,22 +61,22 @@
     <script type="text/javascript">
         $(document).ready(function() {
             const dtTable =
-                $('#usersDataTable').DataTable({
+                $('#matterTypesDataTable').DataTable({
                     processing: true,
                     serverSide: true,
                     responsive: true,
                     order: [0, 'DESC'],
                     ajax: {
-                        url: "{{ route('users.data') }}",
+                        url: "{{ route('matter-types.data') }}",
                         dataType: 'json',
                         type:'GET'
                     },
                     columns: [
                         { data: 'id', name: 'id' },
                         { data: 'name', name: 'name' },
-                        { data: 'email', name: 'email' },
-                        { data: 'user_roles', name: 'user_roles', searchable:false, orderable:false },
+                        { data: 'description', name: 'description' },
                         { data: 'status', name: 'status'},
+                        { data: 'matter_sub_types_count', name: 'matter_sub_types_count'},
                         { data: 'created_at', name: 'created_at'},
                         { data: 'updated_at', name: 'updated_at'},
                         { data: 'action', name: 'action', searchable:false, orderable:false }

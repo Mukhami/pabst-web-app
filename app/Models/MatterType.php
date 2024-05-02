@@ -8,16 +8,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Picklist extends Model
+class MatterType extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'label',
+        'name',
         'description',
-        'identifier',
-        'default_item',
-        'is_system',
+        'key',
+        'status',
     ];
 
     protected function casts(): array
@@ -29,9 +28,9 @@ class Picklist extends Model
         ];
     }
 
-    public function items(): HasMany
+    public function matter_sub_types(): HasMany
     {
-        return $this->hasMany(PicklistItem::class, 'picklist_id');
+        return $this->hasMany(MatterSubType::class);
     }
 
 

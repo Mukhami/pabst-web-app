@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MatterSubTypeController;
+use App\Http\Controllers\MatterTypeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
@@ -18,7 +20,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('roles', RoleController::class)->only('index');
     Route::get('/roles-data', [RoleController::class, 'rolesData'])->name('roles.data');
 
+    Route::resource('matter-types', MatterTypeController::class);
+    Route::get('/matter-types-data', [MatterTypeController::class, 'matterTypesData'])->name('matter-types.data');
 
+    Route::resource('matter-sub-types', MatterSubTypeController::class)->except(['index', 'create', 'show']);
+    Route::get('/matter-subtypes-data/{matterType}', [MatterSubTypeController::class, 'matterSubTypesData'])->name('matter-subtypes.data');
 });
 
 Route::middleware('auth')->group(function () {

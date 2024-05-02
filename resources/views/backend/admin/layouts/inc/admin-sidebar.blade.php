@@ -10,38 +10,38 @@
                 <a class="nav-link d-sm-none" href="#!">
                     <div class="nav-link-icon"><i data-feather="bell"></i></div>
                     Alerts
-{{--                    <span class="badge bg-warning-soft text-warning ms-auto">4 New!</span>--}}
+{{--           <span class="badge bg-warning-soft text-warning ms-auto">4 New!</span>--}}
                 </a>
                 <!-- Sidenav Menu Heading (Core)-->
                 <div class="sidenav-menu-heading">{{ __('Home') }}</div>
                 <!-- Sidenav Link (Dashboard)-->
-                <a class="nav-link" href="{{route('dashboard')}}">
+                <a class="nav-link {{ \Illuminate\Support\Facades\Route::is('dashboard') ? 'active' : '' }}" href="{{route('dashboard')}}">
                     <div class="nav-link-icon"><i data-feather="activity"></i></div>
                     {{__('Dashboard')}}
                 </a>
                 <!-- Sidenav Heading (Custom)-->
                 <div class="sidenav-menu-heading">{{ __('User Management') }}</div>
-                <!-- Sidenav Accordion (Pages)-->
-                <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages">
+                <!-- Sidenav Accordion (System Users)-->
+                <a class="nav-link {{ (\Illuminate\Support\Facades\Route::is('users.index') or \Illuminate\Support\Facades\Route::is('users.create')) ? 'active' : 'collapsed' }}" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapsePages" aria-expanded="{{(\Illuminate\Support\Facades\Route::is('users.index'))}}" aria-controls="collapsePages">
                     <div class="nav-link-icon"><i data-feather="grid"></i></div>
                     {{__('System Users')}}
                     <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                 </a>
-                <div class="collapse" id="collapsePages" data-bs-parent="#accordionSidenav">
+                <div class="collapse {{ (\Illuminate\Support\Facades\Route::is('users.index') or \Illuminate\Support\Facades\Route::is('users.create')) ? 'show' : '' }}" id="collapsePages" data-bs-parent="#accordionSidenav">
                     <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
-                        <a class="nav-link" href="{{route('users.index')}}">{{__('List Users')}}</a>
-                        <a class="nav-link" href="#">{{__('Create New User')}}</a>
+                        <a class="nav-link {{ \Illuminate\Support\Facades\Route::is('users.index') ? 'active' : '' }}" href="{{route('users.index')}}">{{__('List Users')}}</a>
+                        <a class="nav-link {{ \Illuminate\Support\Facades\Route::is('users.create') ? 'active' : '' }}" href="{{route('users.create')}}">{{__('Create New User')}}</a>
                     </nav>
                 </div>
                 <!-- Sidenav Accordion (Flows)-->
-                <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseFlows" aria-expanded="false" aria-controls="collapseFlows">
+                <a class="nav-link {{ (\Illuminate\Support\Facades\Route::is('roles.index')) ? 'active' : 'collapsed' }}" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseFlows" aria-expanded="false" aria-controls="collapseFlows">
                     <div class="nav-link-icon"><i data-feather="repeat"></i></div>
                     {{__('Roles')}}
                     <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                 </a>
-                <div class="collapse" id="collapseFlows" data-bs-parent="#accordionSidenav">
+                <div class="collapse {{ (\Illuminate\Support\Facades\Route::is('roles.index')) ? 'show' : '' }}" id="collapseFlows" data-bs-parent="#accordionSidenav">
                     <nav class="sidenav-menu-nested nav">
-                        <a class="nav-link" href="{{route('roles.index')}}">{{__('List System Roles')}}</a>
+                        <a class="nav-link {{ \Illuminate\Support\Facades\Route::is('roles.index') ? 'active' : '' }}" href="{{route('roles.index')}}">{{__('List System Roles')}}</a>
                     </nav>
                 </div>
                 <!-- Sidenav Heading (Matter Requests)-->
@@ -60,14 +60,21 @@
                     </nav>
                 </div>
                 <!-- Sidenav Accordion (Utilities)-->
-                <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseUtilities" aria-expanded="false" aria-controls="collapseUtilities">
+                <a class="nav-link {{ (\Illuminate\Support\Facades\Route::is('matter-types.index')
+                            or \Illuminate\Support\Facades\Route::is('matter-types.create')
+                            or \Illuminate\Support\Facades\Route::is('matter-types.show')) ? 'active' : 'collapsed' }}" href="javascript:void(0);"
+                   data-bs-toggle="collapse" data-bs-target="#collapseUtilities"
+                   aria-expanded="false" aria-controls="collapseUtilities">
                     <div class="nav-link-icon"><i data-feather="tool"></i></div>
-                    {{__('Picklist Management')}}
+                    {{__('Matter Types')}}
                     <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                 </a>
-                <div class="collapse" id="collapseUtilities" data-bs-parent="#accordionSidenav">
+                <div class="collapse {{ (\Illuminate\Support\Facades\Route::is('matter-types.index')
+                            or \Illuminate\Support\Facades\Route::is('matter-types.show')
+                            or \Illuminate\Support\Facades\Route::is('matter-types.create')) ? 'show' : '' }}" id="collapseUtilities" data-bs-parent="#accordionSidenav">
                     <nav class="sidenav-menu-nested nav">
-                        <a class="nav-link" href="#">{{__('List Picklists')}}</a>
+                        <a class="nav-link {{ \Illuminate\Support\Facades\Route::is('matter-types.index') ? 'active' : '' }}" href="{{ route('matter-types.index') }}">{{__('List Matter Types')}}</a>
+                        <a class="nav-link {{ \Illuminate\Support\Facades\Route::is('matter-types.create') ? 'active' : '' }}" href="{{ route('matter-types.create') }}">{{__('Create Matter Type')}}</a>
                     </nav>
                 </div>
             </div>

@@ -2,16 +2,19 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Gate;
 
 class StoreUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
+    public function authorize(): Response
     {
-        return false;
+        return Gate::authorize('create', User::class);
     }
 
     /**
@@ -22,7 +25,10 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|string|max:100',
+            'email' => 'required|email|unique:users,email',
+            'roles' => 'required|array',
+            'roles.*' => 'exists:roles,id',
         ];
     }
 }
