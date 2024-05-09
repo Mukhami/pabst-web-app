@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\MatterRequest;
 use App\Models\MatterSubType;
 use App\Models\MatterType;
 use App\Models\User;
+use App\Policies\MatterRequestPolicy;
 use App\Policies\MatterSubTypePolicy;
 use App\Policies\MatterTypePolicy;
 use App\Policies\UserPolicy;
@@ -29,5 +31,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(MatterType::class, MatterTypePolicy::class);
         Gate::policy(MatterSubType::class, MatterSubTypePolicy::class);
+        Gate::policy(MatterRequest::class, MatterRequestPolicy::class);
     }
 }

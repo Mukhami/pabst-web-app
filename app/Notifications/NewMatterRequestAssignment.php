@@ -2,23 +2,24 @@
 
 namespace App\Notifications;
 
+use App\Models\MatterRequest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewUserCredentials extends Notification implements ShouldQueue
+class NewMatterRequestAssignment extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public string $password;
+    public MatterRequest $matterRequest;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(string $password)
+    public function __construct($matterRequest)
     {
-        $this->password = $password;
+        $this->matterRequest = $matterRequest;
     }
 
     /**
@@ -37,13 +38,12 @@ class NewUserCredentials extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Pabst User Credentials')
-            ->line('Welcome to Pabst! Your account has been created successfully.')
-            ->line('Here are your login credentials:')
-            ->line('Email: ' . $notifiable->email)
-            ->line('Password: ' . $this->password)
-            ->line('Once logged in, feel free to change your password in the Account Details Page.')
-            ->action('Login Now', route('login'));
+            ->subject('New Matter Request Assignment: Client Matter Number -' . $this->matterRequest->ppg_client_matter_no)
+            ->line('You have been assigned to a new Matter Request.')
+            ->line('Matter PPG REF: ' . $this->matterRequest->ppg_ref)
+            ->line('Title of Invention: ' . $this->matterRequest->title_of_invention)
+            ->line('Client Name: ' . $this->matterRequest->client_name)
+            ->action('View Matter Request', route('matter-requests.show', $this->matterRequest->id));
     }
 
     /**

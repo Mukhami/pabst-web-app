@@ -6,10 +6,15 @@ use App\Http\Controllers\MatterTypeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\MatterRequestController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    } else {
+        return redirect()->route('login');
+    }
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -25,6 +30,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('matter-sub-types', MatterSubTypeController::class)->except(['index', 'create', 'show']);
     Route::get('/matter-subtypes-data/{matterType}', [MatterSubTypeController::class, 'matterSubTypesData'])->name('matter-subtypes.data');
+
+    Route::resource('matter-requests', MatterRequestController::class);
+
 });
 
 Route::middleware('auth')->group(function () {

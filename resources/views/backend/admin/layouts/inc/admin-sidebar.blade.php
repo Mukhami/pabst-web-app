@@ -47,15 +47,17 @@
                 <!-- Sidenav Heading (Matter Requests)-->
                 <div class="sidenav-menu-heading">{{__('Matter Requests')}}</div>
                 <!-- Sidenav Accordion (Components)-->
-                <a class="nav-link collapsed" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseComponents" aria-expanded="false" aria-controls="collapseComponents">
+                <a class="nav-link {{ (\Illuminate\Support\Facades\Route::is('matter-requests.index')
+                            or \Illuminate\Support\Facades\Route::is('matter-requests.create')
+                            or \Illuminate\Support\Facades\Route::is('matter-requests.show')) ? 'active' : 'collapsed' }}" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#collapseComponents" aria-expanded="false" aria-controls="collapseComponents">
                     <div class="nav-link-icon"><i data-feather="package"></i></div>
                     {{__('Matters')}}
                     <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                 </a>
-                <div class="collapse" id="collapseComponents" data-bs-parent="#accordionSidenav">
+                <div class="collapse {{ (\Illuminate\Support\Facades\Route::is('matter-requests.index') or \Illuminate\Support\Facades\Route::is('matter-requests.create')) ? 'show' : '' }}" id="collapseComponents" data-bs-parent="#accordionSidenav">
                     <nav class="sidenav-menu-nested nav">
-                        <a class="nav-link" href="#">{{__('List Matters')}}</a>
-                        <a class="nav-link" href="#">{{__('Create Matter')}}</a>
+                        <a class="nav-link {{ \Illuminate\Support\Facades\Route::is('matter-requests.index') ? 'active' : '' }}" href="{{ route('matter-requests.index') }}">{{__('List Matter Requests')}}</a>
+                        <a class="nav-link {{ \Illuminate\Support\Facades\Route::is('matter-requests.create') ? 'active' : '' }}" href="{{ route('matter-requests.create') }}">{{__('Create Matter Request')}}</a>
                         <a class="nav-link" href="#">{{__('Conflict Checks')}}</a>
                     </nav>
                 </div>
