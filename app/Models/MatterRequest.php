@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MatterRequest extends Model
@@ -70,5 +71,10 @@ class MatterRequest extends Model
     public function additional_staff(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function matter_request_approvals(): HasMany
+    {
+        return $this->hasMany(MatterRequestApproval::class);
     }
 }

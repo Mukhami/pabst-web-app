@@ -71,15 +71,17 @@ class MatterRequestController extends Controller
 
         $responsibleAttorney->notify(new NewMatterRequestAssignment($matterRequest));
 
+        $matterRequestApproval = new MatterRequestApproval();
 
-        MatterRequestApproval::query()->create([
-            'matter_request_id' => $matterRequest->id,
-            'user_id' => $responsibleAttorney->id,
+        $matterRequestApproval->fill([
             'status' => MatterRequestApproval::STATUS_PENDING,
+            'approval_type' => 'responsible_attorney',
         ]);
+        $matterRequestApproval->matter_request()->associate($matterRequest);
+        $matterRequestApproval->user()->associate($responsibleAttorney);
+        $matterRequestApproval->save();
 
-
-        return Redirect::route('matter-requests.index')->with('success', "$matterRequest->title_of_invention created successfully!");
+        return Redirect::route('matter-requests.index')->with('success', "$matterRequest->title_of_invention created successfully, and an Approval request has been sent to $responsibleAttorney->name!");
     }
 
     /**

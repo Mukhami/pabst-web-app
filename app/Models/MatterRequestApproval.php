@@ -20,6 +20,7 @@ class MatterRequestApproval extends Model
         //'user_id',
         'approval_type',
         'status',
+        'status',
         'remarks',
         'submitted_at',
     ];
