@@ -73,6 +73,11 @@ class MatterRequest extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function conductor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'conducted_by', 'id');
+    }
+
     public function matter_request_approvals(): HasMany
     {
         return $this->hasMany(MatterRequestApproval::class);

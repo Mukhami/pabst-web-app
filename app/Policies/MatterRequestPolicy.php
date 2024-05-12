@@ -24,12 +24,6 @@ class MatterRequestPolicy
      */
     public function viewAny(User $user): bool
     {
-        //matters.requests.browse
-        //matters.requests.read
-        //matters.requests.edit
-        //matters.requests.add
-        //matters.requests.delete
-        //matters.requests.approve
         return (
             $user->can('matters.requests.browse') || $user->can('matters.requests.read')
         );

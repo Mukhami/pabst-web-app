@@ -32,6 +32,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/matter-subtypes-data/{matterType}', [MatterSubTypeController::class, 'matterSubTypesData'])->name('matter-subtypes.data');
 
     Route::resource('matter-requests', MatterRequestController::class);
+    Route::get('/matter-requests-data', [MatterRequestController::class, 'matterRequestsData'])->name('matter-requests.data');
+
 
 });
 

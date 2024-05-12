@@ -33,7 +33,7 @@ class StoreMatterRequestRequest extends FormRequest
             'client_secondary_contacts' => 'nullable|string|max:255',
             'title_of_invention' => 'required|string|max:255',
             'matter_type_id' => 'required|exists:matter_types,id',
-            'sub_type_id' => 'required|exists:matter_sub_types,id',
+            'sub_type_id' => 'nullable|exists:matter_sub_types,id',
             'bar_date' => 'required|date',
             'goal_date' => 'required|date',
             'conversion_date' => 'required|date',
@@ -53,7 +53,7 @@ class StoreMatterRequestRequest extends FormRequest
             'conflict_search_needed_explanation' => 'nullable|string',
             'related_cases' => 'nullable|string',
             'responsible_attorney_id' => 'required|exists:users,id',
-            'additional_staff_id' => 'nullable|exists:users,id',
+            'additional_staff_id' => 'nullable|exists:users,id'
         ];
     }
 }
