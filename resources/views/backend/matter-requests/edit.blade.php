@@ -303,6 +303,40 @@
                         </div>
                     </div>
 
+                    @if(auth()->user()->hasRole('responsible_attorney'))
+                        <div class="row gx-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="partner_id">{{__('Partner')}}</label>
+                                <select required class="form-select @error('partner_id') is-invalid @enderror" id="partner_id" name="partner_id">
+                                    <option value="" selected disabled>Select Partner</option>
+                                    @foreach($partners as $partner)
+                                        <option value="{{ $partner->id }}" {{ (old('partner_id', $matterRequest->partner_id) == $partner->id) ? 'selected' : '' }}>{{ $partner->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('partner_id')
+                                <div class="text-sm text-danger">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="docketing_user_id">{{__('Docketing User')}}</label>
+                                <select required class="form-select @error('docketing_user_id') is-invalid @enderror" id="docketing_user_id" name="docketing_user_id">
+                                    <option value="" selected disabled>Select Matter Type</option>
+                                    @foreach($staff as $member)
+                                        <option value="{{ $member->id }}" {{ (old('docketing_user_id', $matterRequest->docketing_user_id) == $member->id) ? 'selected' : '' }}>{{ $member->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('docketing_user_id')
+                                <div class="text-sm text-danger">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
+                    @endif
+
+
                     <!-- Save changes button-->
                     <button class="btn btn-primary" type="submit">{{__('Save changes')}}</button>
                 </form>

@@ -36,6 +36,42 @@
                         </div>
                     </div>
 
+                    <div class="col-lg-3">
+                        <div class="small text-muted mb-2">{{__('Secondary Partner')}}:</div>
+                        @if($matterRequest->partner)
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-lg">
+                                    <img class="avatar-img img-fluid" src="https://eu.ui-avatars.com/api/?name={{urlencode($matterRequest->partner->name)}}" alt="" />
+                                </div>
+                                <div class="ms-3">
+                                    <div class="fs-4 text-dark fw-500">{{ $matterRequest->partner->name }}</div>
+                                </div>
+                            </div>
+                        @else
+                            <div class="ms-3">
+                                <div class="fs-4 text-danger fw-500">{{ __('Partner not Assigned') }}</div>
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="col-lg-3">
+                        <div class="small text-muted mb-2">{{__('Docketing Team Member')}}:</div>
+                        @if($matterRequest->docketing_user)
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-lg">
+                                    <img class="avatar-img img-fluid" src="https://eu.ui-avatars.com/api/?name={{urlencode($matterRequest->docketing_user->name)}}" alt="" />
+                                </div>
+                                <div class="ms-3">
+                                    <div class="fs-4 text-dark fw-500">{{ $matterRequest->docketing_user->name }}</div>
+                                </div>
+                            </div>
+                        @else
+                            <div class="ms-3">
+                                <div class="fs-4 text-danger fw-500">{{ __('Member not Assigned') }}</div>
+                            </div>
+                        @endif
+                    </div>
+
                 </div>
             </div>
         </div>

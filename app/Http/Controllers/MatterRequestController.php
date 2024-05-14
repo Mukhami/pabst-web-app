@@ -10,11 +10,15 @@ use App\Models\MatterRequestApproval;
 use App\Models\MatterSubType;
 use App\Models\MatterType;
 use App\Models\User;
+use App\Notifications\ApprovalRejectedNotification;
+use App\Notifications\ChangesRequestedNotification;
+use App\Notifications\MatterRequestStatusUpdateNotification;
 use App\Notifications\NewMatterRequestAssignment;
 use App\Notifications\UpdatedMatterRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -162,6 +166,15 @@ class MatterRequestController extends Controller
         if ($request->has('additional_staff_id') && $request->input('additional_staff_id') !== null){
             $matterRequest->additional_staff()->associate($request->input('additional_staff_id'));
         }
+
+        if ($request->has('partner_id') && $request->input('partner_id') !== null){
+            $matterRequest->partner()->associate($request->input('partner_id'));
+        }
+
+        if ($request->has('docketing_user_id') && $request->input('docketing_user_id') !== null){
+            $matterRequest->docketing_user()->associate($request->input('docketing_user_id'));
+        }
+
         $matterRequest->save();
 
         $responsibleAttorney = $matterRequest->responsible_attorney;
@@ -185,7 +198,7 @@ class MatterRequestController extends Controller
      */
     public function postApproval(UpdateMatterRequestApprovalRequest $request): RedirectResponse
     {
-        $approval = MatterRequestApproval::query()->with('matter_request')->find($request->input('approval_id'));
+        $approval = MatterRequestApproval::with(['matter_request'])->find($request->input('approval_id'));
 
         $approval->update([
             'status' => $request->input('status'),
@@ -193,8 +206,15 @@ class MatterRequestController extends Controller
             'submitted_at' => now()
         ]);
 
+        $approval->refresh();
+
         $matterRequest = $approval->matter_request;
 
+        $matterRequest->load([
+            'conductor',
+            'responsible_attorney', 'partner',
+            'docketing_user'
+        ]);
 
         // Handle different statuses
         switch ($approval->status) {
@@ -204,58 +224,80 @@ class MatterRequestController extends Controller
                     case MatterRequestApproval::TYPE_RESPONSIBLE_ATTORNEY:
                         $conflictUser = User::role('conflict')->where('status', '=', true)->first();
                         // Route to Conflicts Team
-                        MatterRequestApproval::create([
+                        $new_approval = MatterRequestApproval::create([
                             'matter_request_id' => $matterRequest->id,
                             'user_id' => $conflictUser->id,
                             'approval_type' => MatterRequestApproval::TYPE_CONFLICTS_TEAM,
                             'status' => MatterRequestApproval::STATUS_PENDING,
                         ]);
+
+                        $new_approval->load('matter_request');
+
+                        Notification::send($conflictUser, new MatterRequestStatusUpdateNotification($new_approval));
+
                         break;
 
                     case MatterRequestApproval::TYPE_CONFLICTS_TEAM:
                         // Route back to Responsible Attorney for final approval
-                        MatterRequestApproval::create([
+                        $new_approval = MatterRequestApproval::create([
                             'matter_request_id' => $matterRequest->id,
                             'user_id' => $matterRequest->responsible_attorney_id,
                             'approval_type' => MatterRequestApproval::TYPE_RESPONSIBLE_ATTORNEY_FINAL,
                             'status' => MatterRequestApproval::STATUS_PENDING,
                         ]);
+
+                        $new_approval->load('matter_request');
+
+                        $responsibleAttorney = $matterRequest->responsible_attorney;
+                        Notification::send($responsibleAttorney, new MatterRequestStatusUpdateNotification($new_approval));
+
                         break;
 
                     case MatterRequestApproval::TYPE_RESPONSIBLE_ATTORNEY_FINAL:
                         // Route to Secondary Partner
-                        MatterRequestApproval::create([
+                        $new_approval = MatterRequestApproval::create([
                             'matter_request_id' => $matterRequest->id,
-                            'user_id' => $matterRequest->secondary_partner_id,
+                            'user_id' => $matterRequest->partner_id,
                             'approval_type' => MatterRequestApproval::TYPE_SECONDARY_PARTNER,
                             'status' => MatterRequestApproval::STATUS_PENDING,
                         ]);
+
+                        $new_approval->load('matter_request');
+                        $partner = $matterRequest->partner;
+                        Notification::send($partner, new MatterRequestStatusUpdateNotification($new_approval));
+
                         break;
 
                     case MatterRequestApproval::TYPE_SECONDARY_PARTNER:
                         // Route to Docketing Team
-                        MatterRequestApproval::create([
+                        $new_approval = MatterRequestApproval::create([
                             'matter_request_id' => $matterRequest->id,
-                            'user_id' => $matterRequest->docketing_team_id,
+                            'user_id' => $matterRequest->docketing_user_id,
                             'approval_type' => MatterRequestApproval::TYPE_DOCKETING_TEAM,
                             'status' => MatterRequestApproval::STATUS_PENDING,
                         ]);
+
+                        $new_approval->load('matter_request');
+                        $docketing_user = $matterRequest->docketing_user;
+                        Notification::send($docketing_user, new MatterRequestStatusUpdateNotification($new_approval));
+
                         break;
                 }
                 break;
 
             case MatterRequestApproval::STATUS_REJECTED:
                 // Notify original submitter about rejection
-                $originalSubmitter = $matterRequest->created_by; // Assuming `created_by` stores the original submitter's user ID
-                // Notification logic here
-                // Notification::send($originalSubmitter, new ApprovalRejectedNotification($approval));
+                $originalSubmitter = $matterRequest->conductor;
+                $responsibleAttorney = $matterRequest->responsible_attorney;
+                Notification::send([$originalSubmitter, $responsibleAttorney], new ApprovalRejectedNotification($approval));
                 break;
 
             case MatterRequestApproval::STATUS_CHANGES_REQUESTED:
                 // Notify responsible person for changes
-                $responsiblePerson = $matterRequest->responsible_attorney_id; // Assuming `responsible_attorney_id` stores the responsible person's user ID
+                $responsiblePerson = $matterRequest->responsible_attorney;
+                $originalSubmitter = $matterRequest->conductor;
                 // Notification logic here
-                // Notification::send($responsiblePerson, new ChangesRequestedNotification($approval));
+                Notification::send([$responsiblePerson, $originalSubmitter], new ChangesRequestedNotification($approval));
                 break;
         }
         return Redirect::back()->with('success', 'Approval has been submitted successfully.');

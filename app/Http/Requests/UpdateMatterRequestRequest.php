@@ -54,6 +54,8 @@ class UpdateMatterRequestRequest extends FormRequest
             'related_cases' => 'nullable|string',
             'responsible_attorney_id' => 'required|exists:users,id',
             'additional_staff_id' => 'nullable|exists:users,id',
+            'partner_id' => 'nullable|exists:users,id',
+            'docketing_user_id' => 'nullable|exists:users,id',
         ];
     }
 }
