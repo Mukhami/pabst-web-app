@@ -12,9 +12,11 @@ class UpdateMatterRequestRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): Response
+    public function authorize(): bool
     {
-        return Gate::authorize('update', MatterRequest::class);
+        return auth()->user()->can('matters.requests.edit');
+
+        //return Gate::authorize('update', MatterRequest::class);
     }
 
     /**

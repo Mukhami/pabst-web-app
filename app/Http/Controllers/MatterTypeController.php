@@ -78,7 +78,7 @@ class MatterTypeController extends Controller
      */
     public function edit(MatterType $matterType): View
     {
-        Gate::authorize('update', MatterType::class);
+        Gate::authorize('update', $matterType);
 
         return view('backend.matter-types.edit', [
             'title' => 'Matter Type Management',
@@ -112,7 +112,7 @@ class MatterTypeController extends Controller
      */
     public function destroy(MatterType $matterType): RedirectResponse
     {
-        Gate::authorize('delete', MatterType::class);
+        Gate::authorize('delete', $matterType);
 
         $matterType->delete();
 

@@ -106,7 +106,7 @@ class MatterRequestController extends Controller
      */
     public function show(MatterRequest $matterRequest): View
     {
-        Gate::authorize('view', MatterRequest::class);
+        Gate::authorize('view', $matterRequest);
 
         $matterRequest->load([
             'matter_type',
@@ -130,7 +130,7 @@ class MatterRequestController extends Controller
      */
     public function edit(MatterRequest $matterRequest): View
     {
-        Gate::authorize('update', MatterRequest::class);
+        Gate::authorize('update', $matterRequest);
 
         $matter_types = MatterType::query()->where('status', '=', true)->get();
         $matter_sub_types = MatterSubType::query()->where('status', '=', true)->get();
@@ -290,14 +290,29 @@ class MatterRequestController extends Controller
                 $originalSubmitter = $matterRequest->conductor;
                 $responsibleAttorney = $matterRequest->responsible_attorney;
                 Notification::send([$originalSubmitter, $responsibleAttorney], new ApprovalRejectedNotification($approval));
+
+                MatterRequestApproval::create([
+                    'matter_request_id' => $matterRequest->id,
+                    'user_id' => $approval->user_id,
+                    'approval_type' => $approval->approval_type,
+                    'status' => MatterRequestApproval::STATUS_PENDING,
+                ]);
                 break;
 
             case MatterRequestApproval::STATUS_CHANGES_REQUESTED:
                 // Notify responsible person for changes
                 $responsiblePerson = $matterRequest->responsible_attorney;
                 $originalSubmitter = $matterRequest->conductor;
+
                 // Notification logic here
                 Notification::send([$responsiblePerson, $originalSubmitter], new ChangesRequestedNotification($approval));
+
+                MatterRequestApproval::create([
+                    'matter_request_id' => $matterRequest->id,
+                    'user_id' => $approval->user_id,
+                    'approval_type' => $approval->approval_type,
+                    'status' => MatterRequestApproval::STATUS_PENDING,
+                ]);
                 break;
         }
         return Redirect::back()->with('success', 'Approval has been submitted successfully.');
