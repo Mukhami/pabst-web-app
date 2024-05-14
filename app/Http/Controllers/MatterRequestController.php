@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMatterRequestRequest;
+use App\Http\Requests\UpdateMatterRequestApprovalRequest;
 use App\Http\Requests\UpdateMatterRequestRequest;
 use App\Models\MatterRequest;
 use App\Models\MatterRequestApproval;
@@ -99,9 +100,25 @@ class MatterRequestController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(MatterRequest $matterRequest)
+    public function show(MatterRequest $matterRequest): View
     {
-        //
+        Gate::authorize('view', MatterRequest::class);
+
+        $matterRequest->load([
+            'matter_type',
+            'matter_sub_type',
+            'responsible_attorney',
+            'additional_staff',
+            'conductor',
+            'matter_request_approvals'
+        ]);
+
+        return view('backend.matter-requests.show', [
+            'title' => 'Matter Request Management',
+            'sub_title' => 'View Matter Request.',
+            'matterRequest' => $matterRequest
+        ]);
+
     }
 
     /**
@@ -164,6 +181,87 @@ class MatterRequestController extends Controller
     }
 
     /**
+     * Remove the specified resource from storage.
+     */
+    public function postApproval(UpdateMatterRequestApprovalRequest $request): RedirectResponse
+    {
+        $approval = MatterRequestApproval::query()->with('matter_request')->find($request->input('approval_id'));
+
+        $approval->update([
+            'status' => $request->input('status'),
+            'remarks' => $request->input('remarks'),
+            'submitted_at' => now()
+        ]);
+
+        $matterRequest = $approval->matter_request;
+
+
+        // Handle different statuses
+        switch ($approval->status) {
+            case MatterRequestApproval::STATUS_APPROVED:
+                // Determine the next approver based on the current approval type
+                switch ($approval->approval_type) {
+                    case MatterRequestApproval::TYPE_RESPONSIBLE_ATTORNEY:
+                        $conflictUser = User::role('conflict')->where('status', '=', true)->first();
+                        // Route to Conflicts Team
+                        MatterRequestApproval::create([
+                            'matter_request_id' => $matterRequest->id,
+                            'user_id' => $conflictUser->id,
+                            'approval_type' => MatterRequestApproval::TYPE_CONFLICTS_TEAM,
+                            'status' => MatterRequestApproval::STATUS_PENDING,
+                        ]);
+                        break;
+
+                    case MatterRequestApproval::TYPE_CONFLICTS_TEAM:
+                        // Route back to Responsible Attorney for final approval
+                        MatterRequestApproval::create([
+                            'matter_request_id' => $matterRequest->id,
+                            'user_id' => $matterRequest->responsible_attorney_id,
+                            'approval_type' => MatterRequestApproval::TYPE_RESPONSIBLE_ATTORNEY_FINAL,
+                            'status' => MatterRequestApproval::STATUS_PENDING,
+                        ]);
+                        break;
+
+                    case MatterRequestApproval::TYPE_RESPONSIBLE_ATTORNEY_FINAL:
+                        // Route to Secondary Partner
+                        MatterRequestApproval::create([
+                            'matter_request_id' => $matterRequest->id,
+                            'user_id' => $matterRequest->secondary_partner_id,
+                            'approval_type' => MatterRequestApproval::TYPE_SECONDARY_PARTNER,
+                            'status' => MatterRequestApproval::STATUS_PENDING,
+                        ]);
+                        break;
+
+                    case MatterRequestApproval::TYPE_SECONDARY_PARTNER:
+                        // Route to Docketing Team
+                        MatterRequestApproval::create([
+                            'matter_request_id' => $matterRequest->id,
+                            'user_id' => $matterRequest->docketing_team_id,
+                            'approval_type' => MatterRequestApproval::TYPE_DOCKETING_TEAM,
+                            'status' => MatterRequestApproval::STATUS_PENDING,
+                        ]);
+                        break;
+                }
+                break;
+
+            case MatterRequestApproval::STATUS_REJECTED:
+                // Notify original submitter about rejection
+                $originalSubmitter = $matterRequest->created_by; // Assuming `created_by` stores the original submitter's user ID
+                // Notification logic here
+                // Notification::send($originalSubmitter, new ApprovalRejectedNotification($approval));
+                break;
+
+            case MatterRequestApproval::STATUS_CHANGES_REQUESTED:
+                // Notify responsible person for changes
+                $responsiblePerson = $matterRequest->responsible_attorney_id; // Assuming `responsible_attorney_id` stores the responsible person's user ID
+                // Notification logic here
+                // Notification::send($responsiblePerson, new ChangesRequestedNotification($approval));
+                break;
+        }
+        return Redirect::back()->with('success', 'Approval has been submitted successfully.');
+    }
+
+    /**
      * Matter Requests DataTable
      * @return JsonResponse
      */
@@ -175,7 +273,6 @@ class MatterRequestController extends Controller
             ->select('matter_requests.*', 'users.name as resp_attorney')
             ->leftJoin('users', 'users.id','=','matter_requests.responsible_attorney_id')
             ->with(['matter_request_approvals']);
-
 
         return DataTables::eloquent($query)
             ->addColumn('resp_attorney_name', function ($query) {
@@ -204,9 +301,53 @@ class MatterRequestController extends Controller
             })
             ->addColumn('action', function ($query) {
                 return '
-                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="'.route('matter-requests.index', $query).'"><i class="fa-regular fa-eye"></i></a>
+                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="'.route('matter-requests.show', $query).'"><i class="fa-regular fa-eye"></i></a>
                         <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="'.route('matter-requests.edit', $query).'"><i class="fa-regular fa-edit"></i></a>
                        ';
+            })
+            ->rawColumns(['status', 'action'])
+            ->toJson();
+    }
+
+    /**
+     * Matter Request Approvals DataTable
+     * @param MatterRequest $matterRequest
+     * @return JsonResponse
+     */
+    public function matterRequestApprovalsData(MatterRequest $matterRequest): JsonResponse
+    {
+        Gate::authorize('viewAny', MatterRequest::class);
+
+        $query = MatterRequestApproval::query()
+            ->select('matter_request_approvals.*', 'users.name as user')
+            ->leftJoin('users', 'users.id','=','matter_request_approvals.user_id')
+            ->where('matter_request_approvals.matter_request_id', '=', $matterRequest->id);
+
+        return DataTables::eloquent($query)
+            ->addColumn('user', function ($query) {
+                if ($query->user){
+                    return $query->user;
+                } else {
+                    return 'N/A';
+                }
+            })
+            ->editColumn('status', function ($query) {
+                if ($query->status === MatterRequestApproval::STATUS_PENDING){
+                    return '<div class="badge bg-warning rounded-pill">Pending</div>';
+                } elseif ($query->status === MatterRequestApproval::STATUS_APPROVED){
+                    return '<div class="badge bg-success rounded-pill">Approved</div>';
+                } elseif ($query->status === MatterRequestApproval::STATUS_REJECTED){
+                    return '<div class="badge bg-danger rounded-pill">Rejected</div>';
+                } elseif ($query->status === MatterRequestApproval::STATUS_CHANGES_REQUESTED){
+                    return '<div class="badge bg-info rounded-pill">Changes Requested</div>';
+                }
+            })
+            ->addColumn('action', function ($query) {
+                if (auth()->id() === $query->user_id and $query->status === MatterRequestApproval::STATUS_PENDING) {
+                    return '<button type="button" class="btn btn-sm btn-primary create-approval" data-approval_id="'.$query->id.'" data-bs-toggle="modal" data-bs-target="#createApprovalModal">
+                            Create Approval
+                        </button>';
+                }
             })
             ->rawColumns(['status', 'action'])
             ->toJson();

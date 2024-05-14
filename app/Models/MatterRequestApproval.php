@@ -15,9 +15,15 @@ class MatterRequestApproval extends Model
     const STATUS_REJECTED = 'rejected';
     const STATUS_CHANGES_REQUESTED = 'changes_requested';
 
+
+    const TYPE_RESPONSIBLE_ATTORNEY = 'responsible_attorney';
+    const TYPE_RESPONSIBLE_ATTORNEY_FINAL = 'responsible_attorney_final';
+    const TYPE_CONFLICTS_TEAM = 'conflicts_team';
+    const TYPE_SECONDARY_PARTNER = 'secondary_partner';
+    const TYPE_DOCKETING_TEAM = 'docketing_team';
     protected $fillable = [
-        //'matter_request_id',
-        //'user_id',
+        'matter_request_id',
+        'user_id',
         'approval_type',
         'status',
         'status',
