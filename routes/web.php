@@ -34,6 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('matter-requests', MatterRequestController::class);
     Route::post('/matter-request-post-approval', [MatterRequestController::class, 'postApproval'])->name('matter-requests.post-approval');
     Route::get('/matter-requests-data', [MatterRequestController::class, 'matterRequestsData'])->name('matter-requests.data');
+    Route::get('/matter-requests-pending-approval-data', [MatterRequestController::class, 'usersPendingMatterRequestsData'])->name('matter-requests.users-pending-approval.data');
     Route::get('/matter-request-approvals-data/{matterRequest}', [MatterRequestController::class, 'matterRequestApprovalsData'])->name('matter-request-approvals.data');
 
 

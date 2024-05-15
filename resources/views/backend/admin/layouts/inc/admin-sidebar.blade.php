@@ -58,7 +58,6 @@
                     <nav class="sidenav-menu-nested nav">
                         <a class="nav-link {{ \Illuminate\Support\Facades\Route::is('matter-requests.index') ? 'active' : '' }}" href="{{ route('matter-requests.index') }}">{{__('List Matter Requests')}}</a>
                         <a class="nav-link {{ \Illuminate\Support\Facades\Route::is('matter-requests.create') ? 'active' : '' }}" href="{{ route('matter-requests.create') }}">{{__('Create Matter Request')}}</a>
-                        <a class="nav-link" href="#">{{__('Conflict Checks')}}</a>
                     </nav>
                 </div>
                 <!-- Sidenav Accordion (Utilities)-->

@@ -331,6 +331,36 @@ class MatterRequestController extends Controller
             ->leftJoin('users', 'users.id','=','matter_requests.responsible_attorney_id')
             ->with(['matter_request_approvals']);
 
+        return $this->matterRequestJsonData($query);
+
+    }
+
+    /**
+     * Matter Requests DataTable that have a pending approval for the authenticated user
+     * @return JsonResponse
+     */
+    public function usersPendingMatterRequestsData(): JsonResponse
+    {
+        Gate::authorize('viewAny', MatterRequest::class);
+        $query = MatterRequest::query()
+            ->select('matter_requests.*', 'users.name as resp_attorney')
+            ->leftJoin('users', 'users.id','=','matter_requests.responsible_attorney_id')
+            ->whereHas('matter_request_approvals', function ($q){
+                $q->where('user_id', '=', auth()->id());
+                $q->where('status', '=', MatterRequestApproval::STATUS_PENDING);
+            })
+            ->with(['matter_request_approvals']);
+
+        return $this->matterRequestJsonData($query);
+    }
+
+    /**
+     * Matter Request DataTable Response
+     * @param $query
+     * @return JsonResponse
+     */
+    private function matterRequestJsonData($query): JsonResponse
+    {
         return DataTables::eloquent($query)
             ->addColumn('resp_attorney_name', function ($query) {
                 if ($query->responsible_attorney){

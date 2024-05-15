@@ -224,6 +224,7 @@
                     <tr>
                         <th>#</th>
                         <th>Name</th>
+                        <th>Stage</th>
                         <th>Status</th>
                         <th>Remarks</th>
                         <th>Submitted At</th>
@@ -234,6 +235,7 @@
                     <tr>
                         <th>#</th>
                         <th>Name</th>
+                        <th>Stage</th>
                         <th>Status</th>
                         <th>Remarks</th>
                         <th>Submitted At</th>
@@ -322,6 +324,7 @@
                     columns: [
                         { data: 'id', name: 'id' },
                         { data: 'user', name: 'user' },
+                        { data: 'approval_type', name: 'approval_type' },
                         { data: 'status', name: 'status'},
                         { data: 'remarks', name: 'remarks'},
                         { data: 'submitted_at', name: 'submitted_at'},
