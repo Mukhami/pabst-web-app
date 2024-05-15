@@ -26,7 +26,7 @@ class MatterRequestApproval extends Model
         'user_id',
         'approval_type',
         'status',
-        'status',
+        'reminder_counter',
         'remarks',
         'submitted_at',
     ];

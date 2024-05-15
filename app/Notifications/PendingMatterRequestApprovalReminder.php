@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ChangesRequestedNotification extends Notification implements ShouldQueue
+class PendingMatterRequestApprovalReminder extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -38,8 +38,8 @@ class ChangesRequestedNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Matter Request Approval Changes Requested: Client Matter Number -' . $this->matterRequestApproval->matter_request->ppg_client_matter_no)
-            ->line('The provided matter request has been requested to be changed.')
+            ->subject('Matter Request Approval Reminder: Client Matter Number -' . $this->matterRequestApproval->matter_request->ppg_client_matter_no)
+            ->line('The provided matter request needs your attention.')
             ->line('Matter PPG REF: ' . $this->matterRequestApproval->matter_request->ppg_ref)
             ->line('Title of Invention: ' . $this->matterRequestApproval->matter_request->title_of_invention)
             ->line('Client Name: ' . $this->matterRequestApproval->matter_request->client_name)
