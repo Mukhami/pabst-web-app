@@ -9,4 +9,6 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 
-Schedule::command('app:matter-request-pending-approval-reminder')->everyMinute();
+Schedule::command('app:matter-request-pending-approval-reminder')
+    ->everyTwoHours()
+    ->between('08:00', '18:00');
