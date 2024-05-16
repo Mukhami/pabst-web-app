@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ $title }}</title>
     <link rel="stylesheet" href="{{ asset('backend/assets/css/styles.css') }}">
-    <link rel="icon" type="image/x-icon" href="{{ asset('backend/assets/img/favicon.png') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
 {{--    <link rel="stylesheet" href="{{ asset('backend/assets/css/simple-datatables.min.css') }}" />--}}
     <link rel="stylesheet" href="{{ asset('backend/assets/js/litepicker.js') }}" />
     <script data-search-pseudo-elements defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/js/all.min.js" crossorigin="anonymous"></script>
