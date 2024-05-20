@@ -88,6 +88,11 @@ class MatterRequest extends Model
         return $this->belongsTo(User::class, 'docketing_user_id', 'id');
     }
 
+    public function conflict_user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'conflict_user_id', 'id');
+    }
+
     public function matter_request_approvals(): HasMany
     {
         return $this->hasMany(MatterRequestApproval::class);

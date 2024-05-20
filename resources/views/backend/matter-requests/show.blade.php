@@ -12,7 +12,7 @@
         <div class="card mb-4">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <div class="small text-muted mb-2">{{__('Responsible Attorney')}}:</div>
                         <div class="d-flex align-items-center">
                             <div class="avatar avatar-lg">
@@ -24,7 +24,7 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <div class="small text-muted mb-2">{{__('Additional Staff Member')}}:</div>
                         <div class="d-flex align-items-center">
                             <div class="avatar avatar-lg">
@@ -36,7 +36,27 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
+                        <div class="small text-muted mb-2">{{__('Conflict User')}}:</div>
+                        @if($matterRequest->conflict_user)
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-lg">
+                                    <img class="avatar-img img-fluid" src="https://eu.ui-avatars.com/api/?name={{urlencode($matterRequest->conflict_user->name)}}" alt="" />
+                                </div>
+                                <div class="ms-3">
+                                    <div class="fs-4 text-dark fw-500">{{ $matterRequest->conflict_user->name }}</div>
+                                </div>
+                            </div>
+                        @else
+                            <div class="ms-3">
+                                <div class="fs-4 text-danger fw-500">{{ __('Conflict User not Assigned') }}</div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-lg-4 ">
                         <div class="small text-muted mb-2">{{__('Secondary Partner')}}:</div>
                         @if($matterRequest->partner)
                             <div class="d-flex align-items-center">
@@ -54,7 +74,7 @@
                         @endif
                     </div>
 
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <div class="small text-muted mb-2">{{__('Docketing Team Member')}}:</div>
                         @if($matterRequest->docketing_user)
                             <div class="d-flex align-items-center">
@@ -71,8 +91,8 @@
                             </div>
                         @endif
                     </div>
-
                 </div>
+
             </div>
         </div>
 

@@ -58,6 +58,7 @@ class UpdateMatterRequestRequest extends FormRequest
             'additional_staff_id' => 'nullable|exists:users,id',
             'partner_id' => 'nullable|exists:users,id',
             'docketing_user_id' => 'nullable|exists:users,id',
+            'conflict_user_id' => 'nullable|exists:users,id',
         ];
     }
 }

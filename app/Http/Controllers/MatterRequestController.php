@@ -136,6 +136,7 @@ class MatterRequestController extends Controller
         $matter_sub_types = MatterSubType::query()->where('status', '=', true)->get();
         $responsible_attorneys = User::role('responsible_attorney')->where('status', '=', true)->get();
         $staff = User::role('general')->where('status', '=', true)->get();
+        $conflict = User::role('conflict')->where('status', '=', true)->get();
         $partners = User::role('partner')->where('status', '=', true)->get();
 
         return view('backend.matter-requests.edit', [
@@ -146,6 +147,7 @@ class MatterRequestController extends Controller
             'matter_sub_types' => $matter_sub_types,
             'responsible_attorneys' => $responsible_attorneys,
             'staff' => $staff,
+            'conflict' => $conflict,
             'partners' => $partners,
         ]);
     }
@@ -173,6 +175,9 @@ class MatterRequestController extends Controller
 
         if ($request->has('docketing_user_id') && $request->input('docketing_user_id') !== null){
             $matterRequest->docketing_user()->associate($request->input('docketing_user_id'));
+        }
+        if ($request->has('conflict_user_id') && $request->input('conflict_user_id') !== null){
+            $matterRequest->conflict_user()->associate($request->input('conflict_user_id'));
         }
 
         $matterRequest->save();
@@ -211,6 +216,7 @@ class MatterRequestController extends Controller
         $matterRequest = $approval->matter_request;
 
         $matterRequest->load([
+            'conflict_user',
             'conductor',
             'responsible_attorney', 'partner',
             'docketing_user'
@@ -222,16 +228,20 @@ class MatterRequestController extends Controller
                 // Determine the next approver based on the current approval type
                 switch ($approval->approval_type) {
                     case MatterRequestApproval::TYPE_RESPONSIBLE_ATTORNEY:
-                        $conflictUser = User::role('conflict')->where('status', '=', true)->first();
+                        if (!$matterRequest->conflict_user_id){
+                            return Redirect::back()->withInput()->with('error', 'Kindly ensure a conflict user is attached to the Matter Request before proceeding');
+                        }
                         // Route to Conflicts Team
                         $new_approval = MatterRequestApproval::create([
                             'matter_request_id' => $matterRequest->id,
-                            'user_id' => $conflictUser->id,
+                            'user_id' => $matterRequest->conflict_user_id,
                             'approval_type' => MatterRequestApproval::TYPE_CONFLICTS_TEAM,
                             'status' => MatterRequestApproval::STATUS_PENDING,
                         ]);
 
                         $new_approval->load('matter_request');
+
+                        $conflictUser = $matterRequest->conflict_user;
 
                         Notification::send($conflictUser, new MatterRequestStatusUpdateNotification($new_approval));
 
