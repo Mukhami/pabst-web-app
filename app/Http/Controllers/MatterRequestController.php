@@ -46,11 +46,12 @@ class MatterRequestController extends Controller
     {
         Gate::authorize('create', MatterRequest::class);
 
-        $matter_types = MatterType::query()->where('status', '=', true)->get();
-        $matter_sub_types = MatterSubType::query()->where('status', '=', true)->get();
+        $matter_types = MatterType::query()->orderBy('name')->where('status', '=', true)->get();
+        $matter_sub_types = MatterSubType::query()->orderBy('name')->where('status', '=', true)->get();
         $responsible_attorneys = User::role('responsible_attorney')->where('status', '=', true)->get();
         $staff = User::role('general')->where('status', '=', true)->get();
         $partners = User::role('partner')->where('status', '=', true)->get();
+        $entity_sizes = MatterRequest::ENTITY_SIZES;
 
         return view('backend.matter-requests.create', [
             'title' => 'Matter Request Management',
@@ -60,6 +61,7 @@ class MatterRequestController extends Controller
             'responsible_attorneys' => $responsible_attorneys,
             'staff' => $staff,
             'partners' => $partners,
+            'entity_sizes' => $entity_sizes
         ]);
     }
 
@@ -132,12 +134,13 @@ class MatterRequestController extends Controller
     {
         Gate::authorize('update', $matterRequest);
 
-        $matter_types = MatterType::query()->where('status', '=', true)->get();
-        $matter_sub_types = MatterSubType::query()->where('status', '=', true)->get();
+        $matter_types = MatterType::query()->orderBy('name')->where('status', '=', true)->get();
+        $matter_sub_types = MatterSubType::query()->orderBy('name')->where('status', '=', true)->get();
         $responsible_attorneys = User::role('responsible_attorney')->where('status', '=', true)->get();
         $staff = User::role('general')->where('status', '=', true)->get();
         $conflict = User::role('conflict')->where('status', '=', true)->get();
         $partners = User::role('partner')->where('status', '=', true)->get();
+        $entity_sizes = MatterRequest::ENTITY_SIZES;
 
         return view('backend.matter-requests.edit', [
             'title' => 'Matter Request Management',
@@ -149,6 +152,7 @@ class MatterRequestController extends Controller
             'staff' => $staff,
             'conflict' => $conflict,
             'partners' => $partners,
+            'entity_sizes' => $entity_sizes
         ]);
     }
 
@@ -337,8 +341,9 @@ class MatterRequestController extends Controller
         Gate::authorize('viewAny', MatterRequest::class);
 
         $query = MatterRequest::query()
-            ->select('matter_requests.*', 'users.name as resp_attorney')
-            ->leftJoin('users', 'users.id','=','matter_requests.responsible_attorney_id')
+            ->select('matter_requests.*', 'user_resp_attorney.name as resp_attorney', 'user_conductor.name as conductor')
+            ->leftJoin('users as user_resp_attorney', 'user_resp_attorney.id','=','matter_requests.responsible_attorney_id')
+            ->leftJoin('users  as user_conductor', 'user_conductor.id','=','matter_requests.conducted_by')
             ->with(['matter_request_approvals']);
 
         return $this->matterRequestJsonData($query);
@@ -353,11 +358,12 @@ class MatterRequestController extends Controller
     {
         Gate::authorize('viewAny', MatterRequest::class);
         $query = MatterRequest::query()
-            ->select('matter_requests.*', 'users.name as resp_attorney')
-            ->leftJoin('users', 'users.id','=','matter_requests.responsible_attorney_id')
+            ->select('matter_requests.*', 'user_resp_attorney.name as resp_attorney', 'user_conductor.name as conductor')
+            ->leftJoin('users as user_resp_attorney', 'user_resp_attorney.id','=','matter_requests.responsible_attorney_id')
+            ->leftJoin('users as user_conductor', 'user_conductor.id','=','matter_requests.conducted_by')
             ->whereHas('matter_request_approvals', function ($q){
-                $q->where('user_id', '=', auth()->id());
-                $q->where('status', '=', MatterRequestApproval::STATUS_PENDING);
+                $q->where('matter_request_approvals.user_id', '=', auth()->id());
+                $q->where('matter_request_approvals.status', '=', MatterRequestApproval::STATUS_PENDING);
             })
             ->with(['matter_request_approvals']);
 
@@ -372,13 +378,6 @@ class MatterRequestController extends Controller
     private function matterRequestJsonData($query): JsonResponse
     {
         return DataTables::eloquent($query)
-            ->addColumn('resp_attorney_name', function ($query) {
-                if ($query->responsible_attorney){
-                    return $query->responsible_attorney->name;
-                } else {
-                    return 'N/A';
-                }
-            })
             ->addColumn('status', function ($query) {
                 $approvals = $query->matter_request_approvals;
                 if ($approvals->count() > 0){
@@ -398,8 +397,8 @@ class MatterRequestController extends Controller
             })
             ->addColumn('action', function ($query) {
                 return '
-                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="'.route('matter-requests.show', $query).'"><i class="fa-regular fa-eye"></i></a>
-                        <a class="btn btn-datatable btn-icon btn-transparent-dark me-2" href="'.route('matter-requests.edit', $query).'"><i class="fa-regular fa-edit"></i></a>
+                        <a class="btn btn-light btn-sm me-2 p-1" href="'.route('matter-requests.show', $query).'">View &nbsp; <i class="fa-regular fa-eye"></i></a>
+                        <a class="btn btn-warning btn-sm me-2 p-1 mt-1" href="'.route('matter-requests.edit', $query).'">Edit &nbsp; <i class="fa-regular fa-edit"></i></a>
                        ';
             })
             ->rawColumns(['status', 'action'])

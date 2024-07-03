@@ -12,6 +12,15 @@ class MatterRequest extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const ENTITY_SIZES = [
+//        'nano',
+        'micro',
+        'small',
+//        'medium',
+        'large',
+//        'enterprise',
+    ];
+
     protected $fillable = [
         'ppg_client_matter_no',
         'ppg_ref',
@@ -22,6 +31,7 @@ class MatterRequest extends Model
         'title_of_invention',
 //        'matter_type_id',
 //        'sub_type_id',
+        'entity_size',
         'bar_date',
         'goal_date',
         'conversion_date',
@@ -48,8 +58,8 @@ class MatterRequest extends Model
     {
         return [
             'renewal_fees_handled_elsewhere' => 'boolean',
-            'created_at' => 'datetime:Y-m-d h:i:s',
-            'updated_at' => 'datetime:Y-m-d h:i:s',
+            'created_at' => 'date:d-m-Y',
+            'updated_at' => 'datetime:d-m-Y h:i:s',
         ];
     }
 

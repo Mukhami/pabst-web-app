@@ -13,8 +13,8 @@
             <div class="card-header">
                 {{__('Matter Requests')}}
                 <div>
-                    <a class="btn btn-primary btn-icon mr-2" href="{{ route('matter-requests.create') }}">
-                        <i data-feather="plus"></i>
+                    <a class="btn btn-primary btn-sm mr-2" href="{{ route('matter-requests.create') }}">
+                        Create New Matter Request &nbsp; <i data-feather="plus"></i>
                     </a>
                 </div>
             </div>
@@ -24,15 +24,12 @@
                     <tr>
                         <th>#</th>
                         <th>Resp. Attorney</th>
+                        <th>Conductor</th>
                         <th>Matter No.</th>
-                        <th>PPG Ref</th>
-                        <th>Client Ref</th>
+                        <th>PPG Docket Ref</th>
                         <th>Client Name</th>
-                        <th>Title</th>
-                        <th>Bar Date</th>
-                        <th>Goal Date</th>
-                        <th>Conversion Date</th>
                         <th>Status</th>
+                        <th>Date Created</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -40,15 +37,12 @@
                     <tr>
                         <th>#</th>
                         <th>Resp. Attorney</th>
+                        <th>Conductor</th>
                         <th>Matter No.</th>
-                        <th>PPG Ref</th>
-                        <th>Client Ref</th>
+                        <th>PPG Docket Ref</th>
                         <th>Client Name</th>
-                        <th>Title</th>
-                        <th>Bar Date</th>
-                        <th>Goal Date</th>
-                        <th>Conversion Date</th>
                         <th>Status</th>
+                        <th>Date Created</th>
                         <th>Actions</th>
                     </tr>
                     </tfoot>
@@ -81,16 +75,13 @@
                     },
                     columns: [
                         { data: 'id', name: 'id' },
-                        { data: 'resp_attorney', name: 'resp_attorney' },
+                        { data: 'resp_attorney', name: 'users.name' },
+                        { data: 'conductor', name: 'users.name' },
                         { data: 'ppg_client_matter_no', name: 'ppg_client_matter_no' },
                         { data: 'ppg_ref', name: 'ppg_ref'},
-                        { data: 'client_ref', name: 'client_ref'},
                         { data: 'client_name', name: 'client_name'},
-                        { data: 'title_of_invention', name: 'title_of_invention'},
-                        { data: 'bar_date', name: 'bar_date'},
-                        { data: 'goal_date', name: 'goal_date'},
-                        { data: 'conversion_date', name: 'conversion_date'},
                         { data: 'status', name: 'status'},
+                        { data: 'created_at', name: 'created_at'},
                         { data: 'action', name: 'action', searchable:false, orderable:false }
                     ],
                 });

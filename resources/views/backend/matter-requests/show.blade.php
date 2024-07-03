@@ -112,7 +112,7 @@
                         <p class=" mb-1">{{ $matterRequest->ppg_client_matter_no }}</p>
                     </div>
                     <div class="col-md-4">
-                        <p class="fw-bold mb-1">{{__('PPG Ref')}}</p>
+                        <p class="fw-bold mb-1">{{__('PPG Docket Ref')}}</p>
                         <p class=" mb-1">{{ $matterRequest->ppg_ref }}</p>
                     </div>
                     <div class="col-md-4">
@@ -172,7 +172,7 @@
 
                 <div class="row gx-3 mb-3">
                     <div class="col-md-4">
-                        <p class="fw-bold mb-1">{{__('Investors')}}</p>
+                        <p class="fw-bold mb-1">{{__('Inventors')}}</p>
                         <p class=" mb-1">{{ $matterRequest->inventors }}</p>
                     </div>
                     <div class="col-md-4">

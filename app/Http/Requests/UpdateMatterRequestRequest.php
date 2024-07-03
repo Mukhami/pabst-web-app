@@ -29,7 +29,7 @@ class UpdateMatterRequestRequest extends FormRequest
         return [
             'ppg_client_matter_no' => 'required|string|max:255',
             'ppg_ref' => 'nullable|string|max:255',
-            'client_ref' => 'required|string|max:255',
+            'client_ref' => 'nullable|string|max:255',
             'client_name' => 'required|string|max:255',
             'client_main_contact' => 'required|string|max:255',
             'client_secondary_contacts' => 'nullable|string|max:255',
@@ -38,7 +38,7 @@ class UpdateMatterRequestRequest extends FormRequest
             'sub_type_id' => 'nullable|exists:matter_sub_types,id',
             'bar_date' => 'required|date',
             'goal_date' => 'required|date',
-            'conversion_date' => 'required|date',
+            'conversion_date' => 'nullable|date',
             'inventors' => 'nullable|string',
             'licensees' => 'nullable|string',
             'assignees' => 'nullable|string',
