@@ -269,7 +269,7 @@
                     </div>
 
                     <div class="row gx-3 mb-3">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="small mb-1" for="responsible_attorney_id">{{__('Responsible Attorney')}} <span class="text-danger">*</span></label>
                             <select required class="form-select @error('responsible_attorney_id') is-invalid @enderror" id="responsible_attorney_id" name="responsible_attorney_id">
                                 <option value="" selected disabled>Select Responsible Attorney</option>
@@ -283,7 +283,7 @@
                             </div>
                             @enderror
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="small mb-1" for="sub_type_id">{{__('Additional Staff')}} <span class="text-danger">*</span></label>
                             <select required class="form-select @error('additional_staff_id') is-invalid @enderror" id="additional_staff_id" name="additional_staff_id">
                                 <option value="" selected disabled>Select Matter Type</option>
@@ -297,54 +297,51 @@
                             </div>
                             @enderror
                         </div>
+                        <div class="col-md-4">
+                            <label class="small mb-1" for="conductor_id">{{__('Creator (Conductor)')}} <span class="text-danger">*</span></label>
+                            <select required class="form-select @error('conductor_id') is-invalid @enderror" id="conductor_id" name="conductor_id">
+                                <option value="" selected disabled>Selected Conductor</option>
+                                <option value="{{ $matterRequest->conductor->id }}" selected>{{ $matterRequest->conductor->name }}</option>
+                            </select>
+                            @error('conductor_id')
+                            <div class="text-sm text-danger">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
                     </div>
 
-                    @if(auth()->user()->hasRole('responsible_attorney'))
-                        <div class="row gx-3 mb-3">
-                            <div class="col-md-4">
-                                <label class="small mb-1" for="partner_id">{{__('Partner')}} <span class="text-danger">*</span></label>
-                                <select required class="form-select @error('partner_id') is-invalid @enderror" id="partner_id" name="partner_id">
-                                    <option value="" selected disabled>Select Partner</option>
-                                    @foreach($partners as $partner)
-                                        <option value="{{ $partner->id }}" {{ (old('partner_id', $matterRequest->partner_id) == $partner->id) ? 'selected' : '' }}>{{ $partner->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('partner_id')
-                                <div class="text-sm text-danger">
-                                    {{ $message }}
-                                </div>
-                                @enderror
+                    <div class="row gx-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="small mb-1" for="partner_id">{{__('Partner')}} <span class="text-danger">*</span></label>
+                            <select required class="form-select @error('partner_id') is-invalid @enderror" id="partner_id" name="partner_id">
+                                <option value="" selected disabled>Select Partner</option>
+                                @foreach($partners as $partner)
+                                    <option value="{{ $partner->id }}" {{ (old('partner_id', $matterRequest->partner_id) == $partner->id) ? 'selected' : '' }}>{{ $partner->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('partner_id')
+                            <div class="text-sm text-danger">
+                                {{ $message }}
                             </div>
-                            <div class="col-md-4">
-                                <label class="small mb-1" for="docketing_user_id">{{__('Docketing User')}} <span class="text-danger">*</span></label>
-                                <select required class="form-select @error('docketing_user_id') is-invalid @enderror" id="docketing_user_id" name="docketing_user_id">
-                                    <option value="" selected disabled>Select Matter Type</option>
-                                    @foreach($staff as $member)
-                                        <option value="{{ $member->id }}" {{ (old('docketing_user_id', $matterRequest->docketing_user_id) == $member->id) ? 'selected' : '' }}>{{ $member->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('docketing_user_id')
-                                <div class="text-sm text-danger">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
-                            <div class="col-md-4">
-                                <label class="small mb-1" for="docketing_user_id">{{__('Conflicts')}} <span class="text-danger">*</span></label>
-                                <select required class="form-select @error('conflict_user_id') is-invalid @enderror" id="conflict_user_id" name="conflict_user_id">
-                                    <option value="" selected disabled>Select Matter Type</option>
-                                    @foreach($conflict as $member)
-                                        <option value="{{ $member->id }}" {{ (old('conflict_user_id', $matterRequest->conflict_user_id) == $member->id) ? 'selected' : '' }}>{{ $member->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('conflict_user_id')
-                                <div class="text-sm text-danger">
-                                    {{ $message }}
-                                </div>
-                                @enderror
-                            </div>
+                            @enderror
                         </div>
-                    @endif
+
+                        <div class="col-md-6">
+                            <label class="small mb-1" for="conflict_user_id">{{__('Conflicts')}} <span class="text-danger">*</span></label>
+                            <select required class="form-select @error('conflict_user_id') is-invalid @enderror" id="conflict_user_id" name="conflict_user_id">
+                                <option value="" selected disabled>Select Matter Type</option>
+                                @foreach($conflict as $member)
+                                    <option value="{{ $member->id }}" {{ (old('conflict_user_id', $matterRequest->conflict_user_id) == $member->id) ? 'selected' : '' }}>{{ $member->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('conflict_user_id')
+                            <div class="text-sm text-danger">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+                    </div>
 
 
                     <!-- Save changes button-->

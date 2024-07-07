@@ -73,24 +73,6 @@
                             </div>
                         @endif
                     </div>
-
-                    <div class="col-lg-4">
-                        <div class="small text-muted mb-2">{{__('Docketing Team Member')}}:</div>
-                        @if($matterRequest->docketing_user)
-                            <div class="d-flex align-items-center">
-                                <div class="avatar avatar-lg">
-                                    <img class="avatar-img img-fluid" src="https://eu.ui-avatars.com/api/?name={{urlencode($matterRequest->docketing_user->name)}}" alt="" />
-                                </div>
-                                <div class="ms-3">
-                                    <div class="fs-4 text-dark fw-500">{{ $matterRequest->docketing_user->name }}</div>
-                                </div>
-                            </div>
-                        @else
-                            <div class="ms-3">
-                                <div class="fs-4 text-danger fw-500">{{ __('Member not Assigned') }}</div>
-                            </div>
-                        @endif
-                    </div>
                 </div>
 
             </div>
@@ -100,8 +82,12 @@
             <div class="card-header">
                 {{__('Matter Type Details')}}
                 <div>
-                    <a class="btn btn-primary btn-icon mr-2" href="{{ route('matter-requests.edit', $matterRequest) }}">
-                        <i data-feather="edit"></i>
+                    <a class="btn btn-primary btn-sm mr-2" href="{{ route('matter-requests.downloadPDF', $matterRequest) }}">
+                        View Matter Request Document &nbsp; <i data-feather="eye"></i>
+                    </a>
+
+                    <a class="btn btn-primary btn-sm mr-2" href="{{ route('matter-requests.edit', $matterRequest) }}">
+                        Edit Matter Request Details &nbsp; <i data-feather="edit"></i>
                     </a>
                 </div>
             </div>

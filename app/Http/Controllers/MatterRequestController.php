@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMatterRequestRequest;
 use App\Http\Requests\UpdateMatterRequestApprovalRequest;
 use App\Http\Requests\UpdateMatterRequestRequest;
+use App\Mail\MatterRequestDocketingTeamMail;
 use App\Models\MatterRequest;
 use App\Models\MatterRequestApproval;
 use App\Models\MatterSubType;
@@ -15,9 +16,11 @@ use App\Notifications\ChangesRequestedNotification;
 use App\Notifications\MatterRequestStatusUpdateNotification;
 use App\Notifications\NewMatterRequestAssignment;
 use App\Notifications\UpdatedMatterRequest;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
@@ -52,6 +55,7 @@ class MatterRequestController extends Controller
         $staff = User::role('general')->where('status', '=', true)->get();
         $partners = User::role('partner')->where('status', '=', true)->get();
         $entity_sizes = MatterRequest::ENTITY_SIZES;
+        $conflict = User::role('conflict')->where('status', '=', true)->get();
 
         return view('backend.matter-requests.create', [
             'title' => 'Matter Request Management',
@@ -61,6 +65,7 @@ class MatterRequestController extends Controller
             'responsible_attorneys' => $responsible_attorneys,
             'staff' => $staff,
             'partners' => $partners,
+            'conflict' => $conflict,
             'entity_sizes' => $entity_sizes
         ]);
     }
@@ -84,23 +89,36 @@ class MatterRequestController extends Controller
         if ($request->has('additional_staff_id') && $request->input('additional_staff_id') !== null){
             $matterRequest->additional_staff()->associate($request->input('additional_staff_id'));
         }
+
+        if ($request->has('partner_id') && $request->input('partner_id') !== null){
+            $matterRequest->partner()->associate($request->input('partner_id'));
+        }
+
+        if ($request->has('conflict_user_id') && $request->input('conflict_user_id') !== null){
+            $matterRequest->conflict_user()->associate($request->input('conflict_user_id'));
+        }
+
         $matterRequest->save();
 
         $responsibleAttorney = $matterRequest->responsible_attorney;
 
         $responsibleAttorney->notify(new NewMatterRequestAssignment($matterRequest));
 
-        $matterRequestApproval = new MatterRequestApproval();
-
-        $matterRequestApproval->fill([
+        //Send Approval request to Conflict User
+        $new_approval = MatterRequestApproval::create([
+            'matter_request_id' => $matterRequest->id,
+            'user_id' => $matterRequest->conflict_user_id,
+            'approval_type' => MatterRequestApproval::TYPE_CONFLICTS_TEAM,
             'status' => MatterRequestApproval::STATUS_PENDING,
-            'approval_type' => 'responsible_attorney',
         ]);
-        $matterRequestApproval->matter_request()->associate($matterRequest);
-        $matterRequestApproval->user()->associate($responsibleAttorney);
-        $matterRequestApproval->save();
 
-        return Redirect::route('matter-requests.index')->with('success', "$matterRequest->title_of_invention created successfully, and an Approval request has been sent to $responsibleAttorney->name!");
+        $new_approval->load('matter_request');
+
+        $conflictUser = $matterRequest->conflict_user;
+
+        Notification::send($conflictUser, new MatterRequestStatusUpdateNotification($new_approval));
+
+        return Redirect::route('matter-requests.index')->with('success', "$matterRequest->title_of_invention created successfully, and an Approval request has been sent to $conflictUser->name!");
     }
 
     /**
@@ -128,12 +146,55 @@ class MatterRequestController extends Controller
     }
 
     /**
+     * Download Matter Request PDF the specified resource.
+     */
+    public function downloadPDF(MatterRequest $matterRequest): \Illuminate\Http\Response
+    {
+        Gate::authorize('view', $matterRequest);
+
+        $matterRequest->load([
+            'matter_type',
+            'matter_sub_type',
+            'responsible_attorney',
+            'additional_staff',
+            'conductor',
+            'matter_request_approvals'
+        ]);
+
+        $pdf = Pdf::loadView('pdf.view', ['matterRequest' => $matterRequest]);
+
+        return $pdf->download( "Matter-Request-$matterRequest->ppg_client_matter_no.pdf");
+    }
+
+    /**
+     * Download Matter Request PDF the specified resource.
+     */
+    public function viewPDF(MatterRequest $matterRequest): View
+    {
+        Gate::authorize('view', $matterRequest);
+
+        $matterRequest->load([
+            'matter_type',
+            'matter_sub_type',
+            'responsible_attorney',
+            'additional_staff',
+            'conductor',
+            'matter_request_approvals'
+        ]);
+
+        return view('pdf.view', [
+            'matterRequest' => $matterRequest
+        ]);
+
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(MatterRequest $matterRequest): View
     {
         Gate::authorize('update', $matterRequest);
-
+        $matterRequest->load('conductor');
         $matter_types = MatterType::query()->orderBy('name')->where('status', '=', true)->get();
         $matter_sub_types = MatterSubType::query()->orderBy('name')->where('status', '=', true)->get();
         $responsible_attorneys = User::role('responsible_attorney')->where('status', '=', true)->get();
@@ -177,9 +238,6 @@ class MatterRequestController extends Controller
             $matterRequest->partner()->associate($request->input('partner_id'));
         }
 
-        if ($request->has('docketing_user_id') && $request->input('docketing_user_id') !== null){
-            $matterRequest->docketing_user()->associate($request->input('docketing_user_id'));
-        }
         if ($request->has('conflict_user_id') && $request->input('conflict_user_id') !== null){
             $matterRequest->conflict_user()->associate($request->input('conflict_user_id'));
         }
@@ -209,9 +267,14 @@ class MatterRequestController extends Controller
     {
         $approval = MatterRequestApproval::with(['matter_request'])->find($request->input('approval_id'));
 
+        $additional_remark = '';
+        if ($approval->user_id != auth()->id()){
+            $additional_remark = PHP_EOL . 'Review submitted by '.auth()->user()->name;
+        }
+
         $approval->update([
             'status' => $request->input('status'),
-            'remarks' => $request->input('remarks'),
+            'remarks' => $request->input('remarks') . $additional_remark,
             'submitted_at' => now()
         ]);
 
@@ -231,6 +294,23 @@ class MatterRequestController extends Controller
             case MatterRequestApproval::STATUS_APPROVED:
                 // Determine the next approver based on the current approval type
                 switch ($approval->approval_type) {
+                    case MatterRequestApproval::TYPE_CONFLICTS_TEAM:
+                        // Route back to Responsible Attorney for final approval
+                        $new_approval = MatterRequestApproval::create([
+                            'matter_request_id' => $matterRequest->id,
+                            'user_id' => $matterRequest->responsible_attorney_id,
+                            'approval_type' => MatterRequestApproval::TYPE_RESPONSIBLE_ATTORNEY_FINAL,
+                            'status' => MatterRequestApproval::STATUS_PENDING,
+                        ]);
+
+                        $new_approval->load('matter_request');
+
+                        $responsibleAttorney = $matterRequest->responsible_attorney;
+
+                        Notification::send($responsibleAttorney, new MatterRequestStatusUpdateNotification($new_approval));
+
+                        break;
+
                     case MatterRequestApproval::TYPE_RESPONSIBLE_ATTORNEY:
                         if (!$matterRequest->conflict_user_id){
                             return Redirect::back()->withInput()->with('error', 'Kindly ensure a conflict user is attached to the Matter Request before proceeding');
@@ -251,22 +331,6 @@ class MatterRequestController extends Controller
 
                         break;
 
-                    case MatterRequestApproval::TYPE_CONFLICTS_TEAM:
-                        // Route back to Responsible Attorney for final approval
-                        $new_approval = MatterRequestApproval::create([
-                            'matter_request_id' => $matterRequest->id,
-                            'user_id' => $matterRequest->responsible_attorney_id,
-                            'approval_type' => MatterRequestApproval::TYPE_RESPONSIBLE_ATTORNEY_FINAL,
-                            'status' => MatterRequestApproval::STATUS_PENDING,
-                        ]);
-
-                        $new_approval->load('matter_request');
-
-                        $responsibleAttorney = $matterRequest->responsible_attorney;
-                        Notification::send($responsibleAttorney, new MatterRequestStatusUpdateNotification($new_approval));
-
-                        break;
-
                     case MatterRequestApproval::TYPE_RESPONSIBLE_ATTORNEY_FINAL:
                         // Route to Secondary Partner
                         $new_approval = MatterRequestApproval::create([
@@ -283,18 +347,8 @@ class MatterRequestController extends Controller
                         break;
 
                     case MatterRequestApproval::TYPE_SECONDARY_PARTNER:
-                        // Route to Docketing Team
-                        $new_approval = MatterRequestApproval::create([
-                            'matter_request_id' => $matterRequest->id,
-                            'user_id' => $matterRequest->docketing_user_id,
-                            'approval_type' => MatterRequestApproval::TYPE_DOCKETING_TEAM,
-                            'status' => MatterRequestApproval::STATUS_PENDING,
-                        ]);
-
-                        $new_approval->load('matter_request');
-                        $docketing_user = $matterRequest->docketing_user;
-                        Notification::send($docketing_user, new MatterRequestStatusUpdateNotification($new_approval));
-
+;                       // SEND EMAIL TO: docketing@pabstpatent.com
+                        Mail::to('docketing@pabstpatent.com')->send(new MatterRequestDocketingTeamMail($matterRequest));
                         break;
                 }
                 break;
@@ -427,6 +481,9 @@ class MatterRequestController extends Controller
                     return 'N/A';
                 }
             })
+            ->editColumn('approval_type', function ($query) {
+                return ucwords(str_replace('_', ' ', $query->approval_type));
+            })
             ->editColumn('status', function ($query) {
                 if ($query->status === MatterRequestApproval::STATUS_PENDING){
                     return '<div class="badge bg-warning rounded-pill">Pending</div>';
@@ -439,7 +496,7 @@ class MatterRequestController extends Controller
                 }
             })
             ->addColumn('action', function ($query) {
-                if (auth()->id() === $query->user_id and $query->status === MatterRequestApproval::STATUS_PENDING) {
+                if ((auth()->id() === $query->user_id or auth()->user()->hasRole('admin')) and $query->status === MatterRequestApproval::STATUS_PENDING) {
                     return '<button type="button" class="btn btn-sm btn-primary create-approval" data-approval_id="'.$query->id.'" data-bs-toggle="modal" data-bs-target="#createApprovalModal">
                             Create Approval
                         </button>';
