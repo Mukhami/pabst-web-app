@@ -348,7 +348,7 @@ class MatterRequestController extends Controller
 
                     case MatterRequestApproval::TYPE_SECONDARY_PARTNER:
 ;                       // SEND EMAIL TO: docketing@pabstpatent.com
-                        Mail::to('docketing@pabstpatent.com')->send(new MatterRequestDocketingTeamMail($matterRequest));
+                        Mail::to('docketing@pabstpatent.com')->cc('wmarita@mkenga.com')->send(new MatterRequestDocketingTeamMail($matterRequest));
                         break;
                 }
                 break;

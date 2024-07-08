@@ -109,9 +109,9 @@
                         <div class="col-md-6">
                             <label class="small mb-1" for="sub_type_id">{{__('Matter Sub Type')}}</label>
                             <select class="form-select @error('sub_type_id') is-invalid @enderror" id="sub_type_id" name="sub_type_id">
-                                <option value="" selected disabled>Select Matter Type</option>
+                                <option value="" selected disabled>Please Select Matter Type</option>
                                 @foreach($matter_sub_types as $matter_sub_type)
-                                    <option value="{{ $matter_sub_type->id }}" {{ (old('sub_type_id') == $matter_sub_type->id) ? 'selected' : '' }}>{{ $matter_sub_type->name }}</option>
+                                    <option value="{{ $matter_sub_type->id }}" data-matter-type="{{ $matter_sub_type->matter_type_id }}" {{ (old('sub_type_id') == $matter_sub_type->id) ? 'selected' : '' }}>{{ $matter_sub_type->name }}</option>
                                 @endforeach
                             </select>
                             @error('sub_type_id')
@@ -349,4 +349,48 @@
             </div>
         </div>
     </div>
+@endsection
+@section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const matterTypeSelect = document.getElementById('matter_type_id');
+            const subTypeSelect = document.getElementById('sub_type_id');
+
+            matterTypeSelect.addEventListener('change', function () {
+                const selectedMatterType = this.value;
+
+                // Show all options
+                Array.from(subTypeSelect.options).forEach(option => {
+                    option.style.display = '';
+                });
+
+                // Filter options based on selected matter type
+                if (selectedMatterType) {
+                    Array.from(subTypeSelect.options).forEach(option => {
+                        if (option.value && option.dataset.matterType !== selectedMatterType) {
+                            option.style.display = 'none';
+                        }
+                    });
+
+                    // Remove the default note option
+                    subTypeSelect.options[0].style.display = 'none';
+                } else {
+                    // Show the default note option
+                    subTypeSelect.options[0].style.display = '';
+                }
+
+                // Reset the sub type select value
+                subTypeSelect.value = '';
+            });
+
+            // On initial load, ensure only the default note option is visible
+            subTypeSelect.options[0].style.display = '';
+            Array.from(subTypeSelect.options).forEach(option => {
+                if (option.value) {
+                    option.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
 @endsection

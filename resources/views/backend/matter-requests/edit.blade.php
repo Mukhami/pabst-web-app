@@ -112,7 +112,7 @@
                             <select class="form-select @error('sub_type_id') is-invalid @enderror" id="sub_type_id" name="sub_type_id">
                                 <option value="" selected disabled>Select Matter Type</option>
                                 @foreach($matter_sub_types as $matter_sub_type)
-                                    <option value="{{ $matter_sub_type->id }}" {{ (old('sub_type_id', $matterRequest->sub_type_id) == $matter_sub_type->id) ? 'selected' : '' }}>{{ $matter_sub_type->name }}</option>
+                                    <option value="{{ $matter_sub_type->id }}" data-type-id="{{ $matter_sub_type->matter_type_id }}" {{ (old('sub_type_id', $matterRequest->sub_type_id) == $matter_sub_type->id) ? 'selected' : '' }}>{{ $matter_sub_type->name }}</option>
                                 @endforeach
                             </select>
                             @error('sub_type_id')
@@ -352,3 +352,29 @@
         </div>
     </div>
 @endsection
+
+@section('scripts')
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const matterType = document.getElementById('matter_type_id');
+            const matterSubType = document.getElementById('sub_type_id');
+
+            function filterSubTypes() {
+                const typeId = matterType.value;
+                Array.from(matterSubType.options).forEach(option => {
+                    if (option.value) {
+                        option.style.display = option.getAttribute('data-type-id') === typeId ? '' : 'none';
+                    }
+                });
+            }
+
+            matterType.addEventListener('change', filterSubTypes);
+
+            // Filter sub types on page load if a type is selected
+            if (matterType.value) {
+                filterSubTypes();
+            }
+        });
+    </script>
+@endsection
+
