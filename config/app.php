@@ -4,6 +4,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Imanage Details
+    |--------------------------------------------------------------------------
+    |
+    | This section contains details to be used when posting to imanage
+    |
+    */
+    'imanage_auth' => [
+        'email' => env('MKENGA_API_USER', null),
+        'password' => env('MKENGA_API_PASSWORD', null),
+    ],
+
+    'default_library' => env('MKENGA_API_DEFAULT_LIBRARY', 63), //{"id": 63, "tenant_id": 28,"imanage_library_id": "PPGDMS01","is_classic_client_compatible": 0,"type": "worksite","created_at": "2023-10-21 08:41:08","updated_at": "2024-07-08 12:13:44"}
+    'default_practice_area' => env('MKENGA_API_DEFAULT_PRACTICE_AREA', 251),
+    'default_template' => env('MKENGA_API_DEFAULT_TEMPLATE', 472),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Name
     |--------------------------------------------------------------------------
     |

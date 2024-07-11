@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMatterRequestRequest;
 use App\Http\Requests\UpdateMatterRequestApprovalRequest;
 use App\Http\Requests\UpdateMatterRequestRequest;
+use App\Jobs\PostMatterRequestToImanage;
 use App\Mail\MatterRequestDocketingTeamMail;
 use App\Models\MatterRequest;
 use App\Models\MatterRequestApproval;
@@ -19,6 +20,7 @@ use App\Notifications\UpdatedMatterRequest;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
@@ -360,6 +362,9 @@ class MatterRequestController extends Controller
                             ->cc('wmarita@mkenga.com')
                             ->cc('kmukhami@mkenga.com')
                             ->send(new MatterRequestDocketingTeamMail($matterRequest));
+
+                        $matterRequest->approved = true;
+                        $matterRequest->save();
                         break;
                 }
                 break;
@@ -395,6 +400,15 @@ class MatterRequestController extends Controller
                 break;
         }
         return Redirect::back()->with('success', 'Approval has been submitted successfully.');
+    }
+
+    public function sendToImanage(MatterRequest $matterRequest): RedirectResponse
+    {
+        $user = User::find(auth()->id());
+
+        PostMatterRequestToImanage::dispatch($matterRequest, $user);
+
+        return Redirect::back()->with('success', "Matter Request Ref:$matterRequest->ppg_ref has been queued to be sent to imanage, you will receive an email confirmation once done.");
     }
 
     /**
@@ -444,6 +458,9 @@ class MatterRequestController extends Controller
     {
         return DataTables::eloquent($query)
             ->addColumn('status', function ($query) {
+                if ($query->approved && $query->matter_create_response != 'null'){
+                    return '<div class="badge bg-primary rounded-pill">Synced to iManage</div>';
+                }
                 $approvals = $query->matter_request_approvals;
                 if ($approvals->count() > 0){
                     $approval = $approvals->last();
@@ -461,10 +478,14 @@ class MatterRequestController extends Controller
                 }
             })
             ->addColumn('action', function ($query) {
-                return '
-                        <a class="btn btn-light btn-sm me-2 p-1" href="'.route('matter-requests.show', $query).'">View &nbsp; <i class="fa-regular fa-eye"></i></a>
-                        <a class="btn btn-warning btn-sm me-2 p-1 mt-1" href="'.route('matter-requests.edit', $query).'">Edit &nbsp; <i class="fa-regular fa-edit"></i></a>
-                       ';
+                $action =  '<a class="btn btn-light btn-sm me-2 p-1" href="'.route('matter-requests.show', $query).'">View &nbsp; <i class="fa-regular fa-eye"></i></a>';
+                if (!$query->approved && $query->matter_create_response == 'null'){
+                    $action .= '<a class="btn btn-warning btn-sm me-2 p-1 mt-1" href="'.route('matter-requests.edit', $query).'">Edit &nbsp; <i class="fa-regular fa-edit"></i></a>';
+                }
+                if ((auth()->user()->hasRole('admin') || auth()->user()->hasRole('responsible_attorney')) && ($query->approved && $query->matter_create_response == 'null') ){
+                    $action .= '<a class="btn btn-success btn-sm me-2 p-1" href="'.route('matter-requests.sendToImanage', $query).'">Send To Imanage &nbsp; <i class="fa-regular fa-eye"></i></a>';
+                }
+                return $action;
             })
             ->rawColumns(['status', 'action'])
             ->toJson();
