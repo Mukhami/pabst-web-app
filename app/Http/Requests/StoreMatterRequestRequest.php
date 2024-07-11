@@ -53,7 +53,10 @@ class StoreMatterRequestRequest extends FormRequest
             'conflict_search_needed_explanation' => 'nullable|string',
             'related_cases' => 'nullable|string',
             'responsible_attorney_id' => 'required|exists:users,id',
-            'additional_staff_id' => 'nullable|exists:users,id'
+            'additional_staff_id' => 'nullable|exists:users,id',
+            'partner_id' => 'nullable|exists:users,id',
+            'secondary_partner_id' => 'nullable|exists:users,id',
+            'conflict_user_id' => 'nullable|exists:users,id',
         ];
     }
 }

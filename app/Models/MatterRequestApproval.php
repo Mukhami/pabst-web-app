@@ -19,6 +19,7 @@ class MatterRequestApproval extends Model
     const TYPE_RESPONSIBLE_ATTORNEY = 'responsible_attorney';
     const TYPE_RESPONSIBLE_ATTORNEY_FINAL = 'responsible_attorney_final';
     const TYPE_CONFLICTS_TEAM = 'conflicts_team';
+    const TYPE_PARTNER = 'partner';
     const TYPE_SECONDARY_PARTNER = 'secondary_partner';
     const TYPE_DOCKETING_TEAM = 'docketing_team';
     protected $fillable = [

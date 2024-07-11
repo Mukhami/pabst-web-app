@@ -312,7 +312,7 @@
 
 
                     <div class="row gx-3 mb-3">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="small mb-1" for="partner_id">{{__('Partner')}} <span class="text-danger">*</span></label>
                             <select required class="form-select @error('partner_id') is-invalid @enderror" id="partner_id" name="partner_id">
                                 <option value="" selected disabled>Select Partner</option>
@@ -327,7 +327,22 @@
                             @enderror
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label class="small mb-1" for="secondary_partner_id">{{__('Secondary Partner')}} <span class="text-danger">*</span></label>
+                            <select required class="form-select @error('secondary_partner_id') is-invalid @enderror" id="secondary_partner_id" name="secondary_partner_id">
+                                <option value="" selected disabled>Select Partner</option>
+                                @foreach($partners as $partner)
+                                    <option value="{{ $partner->id }}" {{ (old('secondary_partner_id') == $partner->id) ? 'selected' : '' }}>{{ $partner->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('secondary_partner_id')
+                            <div class="text-sm text-danger">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+
+                        <div class="col-md-4">
                             <label class="small mb-1" for="conflict_user_id">{{__('Conflicts')}} <span class="text-danger">*</span></label>
                             <select required class="form-select @error('conflict_user_id') is-invalid @enderror" id="conflict_user_id" name="conflict_user_id">
                                 <option value="" selected disabled>Select Matter Type</option>

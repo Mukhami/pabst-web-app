@@ -93,6 +93,11 @@ class MatterRequest extends Model
         return $this->belongsTo(User::class, 'partner_id', 'id');
     }
 
+    public function secondary_partner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'secondary_partner_id', 'id');
+    }
+
     public function docketing_user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'docketing_user_id', 'id');

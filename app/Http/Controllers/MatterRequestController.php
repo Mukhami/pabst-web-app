@@ -94,6 +94,10 @@ class MatterRequestController extends Controller
             $matterRequest->partner()->associate($request->input('partner_id'));
         }
 
+        if ($request->has('secondary_partner_id') && $request->input('secondary_partner_id') !== null){
+            $matterRequest->secondary_partner()->associate($request->input('secondary_partner_id'));
+        }
+
         if ($request->has('conflict_user_id') && $request->input('conflict_user_id') !== null){
             $matterRequest->conflict_user()->associate($request->input('conflict_user_id'));
         }
@@ -238,6 +242,10 @@ class MatterRequestController extends Controller
             $matterRequest->partner()->associate($request->input('partner_id'));
         }
 
+        if ($request->has('secondary_partner_id') && $request->input('secondary_partner_id') !== null){
+            $matterRequest->secondary_partner()->associate($request->input('secondary_partner_id'));
+        }
+
         if ($request->has('conflict_user_id') && $request->input('conflict_user_id') !== null){
             $matterRequest->conflict_user()->associate($request->input('conflict_user_id'));
         }
@@ -286,7 +294,7 @@ class MatterRequestController extends Controller
             'conflict_user',
             'conductor',
             'responsible_attorney', 'partner',
-            'docketing_user'
+            'secondary_partner'
         ]);
 
         // Handle different statuses
@@ -295,60 +303,63 @@ class MatterRequestController extends Controller
                 // Determine the next approver based on the current approval type
                 switch ($approval->approval_type) {
                     case MatterRequestApproval::TYPE_CONFLICTS_TEAM:
-                        // Route back to Responsible Attorney for final approval
+                        // Route back to Partner
                         $new_approval = MatterRequestApproval::create([
                             'matter_request_id' => $matterRequest->id,
-                            'user_id' => $matterRequest->responsible_attorney_id,
-                            'approval_type' => MatterRequestApproval::TYPE_RESPONSIBLE_ATTORNEY_FINAL,
+                            'user_id' => $matterRequest->partner_id,
+                            'approval_type' => MatterRequestApproval::TYPE_PARTNER,
                             'status' => MatterRequestApproval::STATUS_PENDING,
                         ]);
 
                         $new_approval->load('matter_request');
 
-                        $responsibleAttorney = $matterRequest->responsible_attorney;
+                        $partner = $matterRequest->partner;
 
-                        Notification::send($responsibleAttorney, new MatterRequestStatusUpdateNotification($new_approval));
+                        Notification::send($partner, new MatterRequestStatusUpdateNotification($new_approval));
 
                         break;
 
-                    case MatterRequestApproval::TYPE_RESPONSIBLE_ATTORNEY:
+                    case MatterRequestApproval::TYPE_PARTNER:
                         if (!$matterRequest->conflict_user_id){
                             return Redirect::back()->withInput()->with('error', 'Kindly ensure a conflict user is attached to the Matter Request before proceeding');
                         }
                         // Route to Conflicts Team
                         $new_approval = MatterRequestApproval::create([
                             'matter_request_id' => $matterRequest->id,
-                            'user_id' => $matterRequest->conflict_user_id,
-                            'approval_type' => MatterRequestApproval::TYPE_CONFLICTS_TEAM,
-                            'status' => MatterRequestApproval::STATUS_PENDING,
-                        ]);
-
-                        $new_approval->load('matter_request');
-
-                        $conflictUser = $matterRequest->conflict_user;
-
-                        Notification::send($conflictUser, new MatterRequestStatusUpdateNotification($new_approval));
-
-                        break;
-
-                    case MatterRequestApproval::TYPE_RESPONSIBLE_ATTORNEY_FINAL:
-                        // Route to Secondary Partner
-                        $new_approval = MatterRequestApproval::create([
-                            'matter_request_id' => $matterRequest->id,
-                            'user_id' => $matterRequest->partner_id,
+                            'user_id' => $matterRequest->secondary_partner_id,
                             'approval_type' => MatterRequestApproval::TYPE_SECONDARY_PARTNER,
                             'status' => MatterRequestApproval::STATUS_PENDING,
                         ]);
 
                         $new_approval->load('matter_request');
-                        $partner = $matterRequest->partner;
-                        Notification::send($partner, new MatterRequestStatusUpdateNotification($new_approval));
+
+                        $secondary_partner = $matterRequest->secondary_partner;
+
+                        Notification::send($secondary_partner, new MatterRequestStatusUpdateNotification($new_approval));
 
                         break;
 
+//                    case MatterRequestApproval::TYPE_RESPONSIBLE_ATTORNEY_FINAL:
+//                        // Route to Secondary Partner
+//                        $new_approval = MatterRequestApproval::create([
+//                            'matter_request_id' => $matterRequest->id,
+//                            'user_id' => $matterRequest->partner_id,
+//                            'approval_type' => MatterRequestApproval::TYPE_SECONDARY_PARTNER,
+//                            'status' => MatterRequestApproval::STATUS_PENDING,
+//                        ]);
+//
+//                        $new_approval->load('matter_request');
+//                        $partner = $matterRequest->partner;
+//                        Notification::send($partner, new MatterRequestStatusUpdateNotification($new_approval));
+//
+//                        break;
+
                     case MatterRequestApproval::TYPE_SECONDARY_PARTNER:
 ;                       // SEND EMAIL TO: docketing@pabstpatent.com
-                        Mail::to('docketing@pabstpatent.com')->cc('wmarita@mkenga.com')->send(new MatterRequestDocketingTeamMail($matterRequest));
+                        Mail::to('docketing@pabstpatent.com')
+                            ->cc('wmarita@mkenga.com')
+                            ->cc('kmukhami@mkenga.com')
+                            ->send(new MatterRequestDocketingTeamMail($matterRequest));
                         break;
                 }
                 break;
