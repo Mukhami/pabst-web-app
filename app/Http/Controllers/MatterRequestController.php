@@ -515,7 +515,7 @@ class MatterRequestController extends Controller
                     $action .= '<a class="btn btn-warning btn-sm me-2 p-1 mt-1" href="'.route('matter-requests.edit', $query).'">Edit &nbsp; <i class="fa-regular fa-edit"></i></a>';
                 }
                 if ((auth()->user()->hasRole('admin') || auth()->user()->hasRole('responsible_attorney')) && ($query->approved && $query->matter_create_response == null) ){
-                    $action .= '<a class="btn btn-success btn-sm me-2 p-1" href="'.route('matter-requests.sendToImanage', $query).'">Send To Imanage &nbsp; <i class="fa-regular fa-eye"></i></a>';
+                    $action .= '<a class="btn btn-success btn-sm me-2 p-1" href="'.route('matter-requests.sendToImanage', $query).'">Send to iManage &nbsp; <i class="fa-regular fa-eye"></i></a>';
                 }
                 return $action;
             })
