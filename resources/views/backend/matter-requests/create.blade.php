@@ -9,7 +9,7 @@
                 <p class="text-muted">
                     {{__('Kindly fill in the form below to create a new Matter Request.')}}
                 </p>
-                <form method="post" action="{{ route('matter-requests.store') }}" >
+                <form method="post" action="{{ route('matter-requests.store') }}" enctype="multipart/form-data">
                     @csrf
                     <!-- Form Row  -->
                     <div class="row gx-3 mb-3">
@@ -268,6 +268,18 @@
                     </div>
 
                     <div class="row gx-3 mb-3">
+                        <div class="col-md-12">
+                            <label class="small mb-1" for="attachments">{{__('Attachments')}}</label>
+                            <input type="file" multiple class="form-control @error('attachments') is-invalid @enderror" id="attachments"  name="attachments[]"/>
+                            @error('attachments')
+                            <div class="text-sm text-danger">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="row gx-3 mb-3">
                         <div class="col-md-4">
                             <label class="small mb-1" for="responsible_attorney_id">{{__('Responsible Attorney')}} <span class="text-danger">*</span></label>
                             <select required class="form-select @error('responsible_attorney_id') is-invalid @enderror" id="responsible_attorney_id" name="responsible_attorney_id">
@@ -408,4 +420,21 @@
         });
     </script>
 
+    <script>
+        let files = [];
+        document.getElementById('attachments').addEventListener('change', function(event) {
+            files = event.target.files;
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (files.length > 0) {
+                let fileInput = document.getElementById('attachments');
+                let dataTransfer = new DataTransfer();
+                for (let file of files) {
+                    dataTransfer.items.add(file);
+                }
+                fileInput.files = dataTransfer.files;
+            }
+        });
+    </script>
 @endsection

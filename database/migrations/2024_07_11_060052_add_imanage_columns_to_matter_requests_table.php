@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('matter_requests', function (Blueprint $table) {
             $table->boolean('approved')->default(false)->after('reviewed_date');
-            $table->json('matter_create_response')->after('related_cases');
+            $table->json('matter_create_response')->nullable()->after('related_cases');
         });
     }
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\MatterTypeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\MatterRequestController;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +40,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/matter-requests-data', [MatterRequestController::class, 'matterRequestsData'])->name('matter-requests.data');
     Route::get('/matter-requests-pending-approval-data', [MatterRequestController::class, 'usersPendingMatterRequestsData'])->name('matter-requests.users-pending-approval.data');
     Route::get('/matter-request-approvals-data/{matterRequest}', [MatterRequestController::class, 'matterRequestApprovalsData'])->name('matter-request-approvals.data');
+
+
+    Route::get('/download-file/{file}', [FileController::class, 'downloadFile'])->name('file.download');
+    Route::delete('/delete-file/{file}', [FileController::class, 'deleteFile'])->name('file.delete');
 });
 
 Route::middleware('auth')->group(function () {

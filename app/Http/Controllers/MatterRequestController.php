@@ -106,6 +106,22 @@ class MatterRequestController extends Controller
 
         $matterRequest->save();
 
+
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $uploadedFile) {
+                // Create a unique file name with the matterRequest ID
+                $filename = $matterRequest->id . '-' . Str::slug( $uploadedFile->getClientOriginalName()) . '-' . mt_rand(1000,9999) . '.' . $uploadedFile->getClientOriginalExtension();
+                // Store the file in the "attachments/matterRequestID" directory
+                $path = $uploadedFile->storeAs('attachments/' . $matterRequest->id, $filename);
+                $matterRequest->files()->create([
+                    'name' => $filename,
+                    'path' => $path,
+                    'mime_type' => $uploadedFile->getClientMimeType(),
+                    'size' => $uploadedFile->getSize(),
+                ]);
+            }
+        }
+
         $responsibleAttorney = $matterRequest->responsible_attorney;
 
         $responsibleAttorney->notify(new NewMatterRequestAssignment($matterRequest));
@@ -136,6 +152,7 @@ class MatterRequestController extends Controller
 
         $matterRequest->load([
             'matter_type',
+            'files',
             'matter_sub_type',
             'responsible_attorney',
             'additional_staff',
@@ -200,7 +217,7 @@ class MatterRequestController extends Controller
     public function edit(MatterRequest $matterRequest): View
     {
         Gate::authorize('update', $matterRequest);
-        $matterRequest->load('conductor');
+        $matterRequest->load(['conductor', 'files']);
         $matter_types = MatterType::query()->orderBy('name')->where('status', '=', true)->get();
         $matter_sub_types = MatterSubType::query()->orderBy('name')->where('status', '=', true)->get();
         $responsible_attorneys = User::role('responsible_attorney')->where('status', '=', true)->get();
@@ -253,6 +270,21 @@ class MatterRequestController extends Controller
         }
 
         $matterRequest->save();
+
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $uploadedFile) {
+                // Create a unique file name with the matterRequest ID
+                $filename = $matterRequest->id . '-' . Str::slug( $uploadedFile->getClientOriginalName()) . '-' . mt_rand(1000,9999) . '.' . $uploadedFile->getClientOriginalExtension();
+                // Store the file in the "attachments/matterRequestID" directory
+                $path = $uploadedFile->storeAs('attachments/' . $matterRequest->id, $filename);
+                $matterRequest->files()->create([
+                    'name' => $filename,
+                    'path' => $path,
+                    'mime_type' => $uploadedFile->getClientMimeType(),
+                    'size' => $uploadedFile->getSize(),
+                ]);
+            }
+        }
 
         $responsibleAttorney = $matterRequest->responsible_attorney;
 
@@ -458,7 +490,7 @@ class MatterRequestController extends Controller
     {
         return DataTables::eloquent($query)
             ->addColumn('status', function ($query) {
-                if ($query->approved && $query->matter_create_response != 'null'){
+                if ($query->approved && $query->matter_create_response != null){
                     return '<div class="badge bg-primary rounded-pill">Synced to iManage</div>';
                 }
                 $approvals = $query->matter_request_approvals;
@@ -479,7 +511,7 @@ class MatterRequestController extends Controller
             })
             ->addColumn('action', function ($query) {
                 $action =  '<a class="btn btn-light btn-sm me-2 p-1" href="'.route('matter-requests.show', $query).'">View &nbsp; <i class="fa-regular fa-eye"></i></a>';
-                if (!$query->approved && $query->matter_create_response == 'null'){
+                if (!$query->approved && $query->matter_create_response == null){
                     $action .= '<a class="btn btn-warning btn-sm me-2 p-1 mt-1" href="'.route('matter-requests.edit', $query).'">Edit &nbsp; <i class="fa-regular fa-edit"></i></a>';
                 }
                 if ((auth()->user()->hasRole('admin') || auth()->user()->hasRole('responsible_attorney')) && ($query->approved && $query->matter_create_response == 'null') ){

@@ -112,4 +112,9 @@ class MatterRequest extends Model
     {
         return $this->hasMany(MatterRequestApproval::class);
     }
+
+    public function files(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable');
+    }
 }

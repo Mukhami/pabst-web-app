@@ -222,6 +222,46 @@
 
         <div class="card card-header-actions mx-auto mb-4">
             <div class="card-header">
+                {{__('Attached Files')}}
+            </div>
+            <div class="card-body">
+                @if($matterRequest->files->isNotEmpty())
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>{{__('File Name')}}</th>
+                                <th>{{__('Type')}}</th>
+                                <th>{{__('Actions')}}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($matterRequest->files as $file)
+                                <tr>
+                                    <td>{{ $file->name }}</td>
+                                    <td>{{ $file->mime_type }}</td>
+                                    <td class="d-flex align-items-center">
+                                        <a href="{{ route('file.download', $file) }}" class="btn btn-sm btn-primary">{{__('Download')}} &nbsp; <i class="fa-solid fa-arrow-down"></i></a>
+                                        &nbsp;
+                                        <form action="{{ route('file.delete', $file) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">{{__('Delete')}} &nbsp; <i class="fa-solid fa-trash"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <p>{{__('No files attached')}}</p>
+                @endif
+            </div>
+        </div>
+
+        <div class="card card-header-actions mx-auto mb-4">
+            <div class="card-header">
                 {{  __('Matter Request Approvals')}}
             </div>
             <div class="card-body">

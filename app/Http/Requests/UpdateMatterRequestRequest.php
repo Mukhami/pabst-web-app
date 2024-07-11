@@ -60,6 +60,8 @@ class UpdateMatterRequestRequest extends FormRequest
             'secondary_partner_id' => 'nullable|exists:users,id',
             'docketing_user_id' => 'nullable|exists:users,id',
             'conflict_user_id' => 'nullable|exists:users,id',
+            'attachments' => 'nullable|array',
+            'attachments.*' => 'file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,txt,rtf,zip,png,jpeg,jpg,csv|max:15360', // 15360 KB = 15 MB
         ];
     }
 }
