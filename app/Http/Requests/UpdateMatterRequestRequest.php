@@ -27,7 +27,12 @@ class UpdateMatterRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ppg_client_matter_no' => 'required|string|max:255',
+            'ppg_client_matter_no' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[a-zA-Z0-9]+\/[a-zA-Z0-9]+$/'
+            ],
             'ppg_ref' => 'nullable|string|max:255',
             'client_ref' => 'nullable|string|max:255',
             'client_name' => 'required|string|max:255',

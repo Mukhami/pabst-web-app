@@ -17,6 +17,7 @@
                         <div class="col-md-4">
                             <label class="small mb-1" for="ppg_client_matter_no">{{__('PPG Client Matter Number')}} <span class="text-danger">*</span></label>
                             <input required class="form-control @error('ppg_client_matter_no') is-invalid @enderror" id="ppg_client_matter_no" type="text" placeholder="Enter PPG Client Matter Number" value="{{ old('ppg_client_matter_no', $matterRequest->ppg_client_matter_no) }}" name="ppg_client_matter_no"/>
+                            <small>{{__('Accepted format: [ClientID]/[MatterID], e.g., 1234/5678')}}</small>
                             @error('ppg_client_matter_no')
                             <div class="text-sm text-danger">
                                 {{ $message }}
@@ -325,7 +326,7 @@
                     </div>
 
                     <div class="row gx-3 mb-3">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="small mb-1" for="partner_id">{{__('Partner')}} <span class="text-danger">*</span></label>
                             <select required class="form-select @error('partner_id') is-invalid @enderror" id="partner_id" name="partner_id">
                                 <option value="" selected disabled>Select Partner</option>
@@ -355,7 +356,7 @@
                             @enderror
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label class="small mb-1" for="conflict_user_id">{{__('Conflicts')}} <span class="text-danger">*</span></label>
                             <select required class="form-select @error('conflict_user_id') is-invalid @enderror" id="conflict_user_id" name="conflict_user_id">
                                 <option value="" selected disabled>Select Matter Type</option>

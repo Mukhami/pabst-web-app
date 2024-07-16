@@ -76,7 +76,7 @@
                         { data: 'name', name: 'name' },
                         { data: 'description', name: 'description' },
                         { data: 'status', name: 'status'},
-                        { data: 'matter_sub_types_count', name: 'matter_sub_types_count'},
+                        { data: 'matter_sub_types_count', name: 'matter_sub_types_count', searchable:false, orderable:false},
                         { data: 'created_at', name: 'created_at'},
                         { data: 'updated_at', name: 'updated_at'},
                         { data: 'action', name: 'action', searchable:false, orderable:false }

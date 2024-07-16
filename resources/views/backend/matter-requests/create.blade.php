@@ -16,6 +16,7 @@
                         <div class="col-md-4">
                             <label class="small mb-1" for="ppg_client_matter_no">{{__('PPG Client Matter Number')}} <span class="text-danger">*</span> </label>
                             <input required class="form-control @error('ppg_client_matter_no') is-invalid @enderror" id="ppg_client_matter_no" type="text" placeholder="Enter PPG Client Matter Number" value="{{ old('ppg_client_matter_no') }}" name="ppg_client_matter_no"/>
+                            <small>{{__('Accepted format: [ClientID]/[MatterID], e.g., 1234/5678')}}</small>
                             @error('ppg_client_matter_no')
                             <div class="text-sm text-danger">
                                 {{ $message }}

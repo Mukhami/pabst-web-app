@@ -50,13 +50,28 @@ class PostMatterRequestToImanage implements ShouldQueue
         } else {
             throw new \Exception('Failed to retrieve access token from API. Response '. $authRequest);
         }
+
+        $clientMatterNo = $matterRequest->ppg_client_matter_no;
+        $clientMatterNoArray = explode('/', $clientMatterNo);
+        if (Arr::exists($clientMatterNoArray, 0)){
+            $clientKey = $clientMatterNoArray[0];
+        } else {
+            throw new \Exception('Failed to retrieve client key from ppg_client_matter_no : Retrieved Array '. json_encode($clientMatterNoArray));
+        }
+
+        if (Arr::exists($clientMatterNoArray, 1)){
+            $matterKey = $clientMatterNoArray[1];
+        } else {
+            throw new \Exception('Failed to retrieve matter key from ppg_client_matter_no : Retrieved Array '. json_encode($clientMatterNoArray));
+        }
+
         // check if client exists
-        $clientCheckRequest = Http::withToken($token)->acceptJson()->post($baseUrl.'/clients/fetch-using-key/'.$matterRequest->ppg_ref);
+        $clientCheckRequest = Http::withToken($token)->acceptJson()->post($baseUrl.'/clients/fetch-using-key/'.$clientKey);
         if ($clientCheckRequest->notFound()){
             // post client
             $clientData = [
                 'library_id' => config('app.default_library'),
-                'client_key' => $matterRequest->ppg_ref,
+                'client_key' => $clientKey,
                 'client_name' => $matterRequest->client_name,
                 'enabled' => true,
                 'hipaa' => false,
@@ -75,8 +90,8 @@ class PostMatterRequestToImanage implements ShouldQueue
                 'client_id' => $clientId,
                 'practice_area_id' => config('app.default_practice_area'),
                 'template_id' => config('app.default_template'),
-                'matter_key' => $matterRequest->ppg_client_matter_no,
-                'description' => $matterRequest->title_of_invention,
+                'matter_key' => $matterKey,
+                'description' => $matterRequest->ppg_ref,
                 'enabled' => true,
                 'hipaa' => false,
             ];
