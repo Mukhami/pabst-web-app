@@ -173,8 +173,8 @@
                             @enderror
                         </div>
                         <div class="col-md-4">
-                            <label class="small mb-1" for="assignees">{{__('Assignee(s)')}} <span class="text-danger">*</span></label>
-                            <input required class="form-control @error('assignees') is-invalid @enderror" id="assignees" type="text" placeholder="Enter Assignee(s)" value="{{ old('assignees') }}" name="assignees"/>
+                            <label class="small mb-1" for="assignees">{{__('Applicant(s)')}} <span class="text-danger">*</span></label>
+                            <input required class="form-control @error('assignees') is-invalid @enderror" id="assignees" type="text" placeholder="Enter Applicant(s)" value="{{ old('assignees') }}" name="assignees"/>
                             @error('assignees')
                             <div class="text-sm text-danger">
                                 {{ $message }}

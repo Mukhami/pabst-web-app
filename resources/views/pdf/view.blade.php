@@ -120,14 +120,6 @@
             <td>{{ $matterRequest->conducted_date }}</td>
         </tr>
         <tr>
-            <th>Reviewed By</th>
-            <td>{{ $matterRequest->reviewed_by }}</td>
-        </tr>
-        <tr>
-            <th>Reviewed Date</th>
-            <td>{{ $matterRequest->reviewed_date }}</td>
-        </tr>
-        <tr>
             <th>Conflict Search Needed Explanation</th>
             <td>{{ $matterRequest->conflict_search_needed_explanation }}</td>
         </tr>
