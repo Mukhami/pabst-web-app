@@ -50,12 +50,14 @@ class MatterRequestPolicy
      */
     public function update(User $user, MatterRequest $matterRequest): bool
     {
-        if ($matterRequest->conducted_by === auth()->id() or $matterRequest->responsible_attorney_id === auth()->id()){
-            return true;
-        } else {
-            return false;
-        }
-        //return $user->can('matters.requests.edit');
+        /*
+            if ($matterRequest->conducted_by === auth()->id() or $matterRequest->responsible_attorney_id === auth()->id()){
+                return true;
+            } else {
+                return false;
+            }
+        */
+        return $user->can('matters.requests.edit');
     }
 
     /**

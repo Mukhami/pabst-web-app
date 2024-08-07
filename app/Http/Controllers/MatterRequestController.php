@@ -290,7 +290,7 @@ class MatterRequestController extends Controller
         //$responsibleAttorney = $matterRequest->responsible_attorney;
         //$responsibleAttorney->notify(new UpdatedMatterRequest($matterRequest));
 
-        return Redirect::route('matter-requests.index')->with('success', "$matterRequest->title_of_invention updated successfully, and an Updated Approval request has been sent to $responsibleAttorney->name!");
+        return Redirect::route('matter-requests.index')->with('success', "$matterRequest->title_of_invention updated successfully");
 
     }
 
