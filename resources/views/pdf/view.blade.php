@@ -84,6 +84,18 @@
             <td>{{ $matterRequest->inventors }}</td>
         </tr>
         <tr>
+            <th>Responsible Attorney</th>
+            <td>{{ $matterRequest->responsible_attorney->name }}</td>
+        </tr>
+        <tr>
+            <th>Additional Staff</th>
+            <td>{{ $matterRequest->additional_staff->name }}</td>
+        </tr>
+        <tr>
+            <th>Conducted By</th>
+            <td>{{ $matterRequest->conductor->name }}</td>
+        </tr>
+        <tr>
             <th>Licensees</th>
             <td>{{ $matterRequest->licensees }}</td>
         </tr>
