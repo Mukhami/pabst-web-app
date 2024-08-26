@@ -37,7 +37,7 @@ class NewUserCredentials extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Pabst User Credentials')
+            ->subject('PPG Web App User Credentials')
             ->line('Welcome to Pabst! Your account has been created successfully.')
             ->line('Here are your login credentials:')
             ->line('Email: ' . $notifiable->email)

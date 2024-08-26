@@ -36,7 +36,7 @@
     <h2 class="text-center" style="color: #285f5d">Matter Details</h2>
     <table class="table table-bordered">
         <tr>
-            <th>PPG Client Matter Number</th>
+            <th>PPG Billing Number</th>
             <td>{{ $matterRequest->ppg_client_matter_no }}</td>
         </tr>
         <tr>

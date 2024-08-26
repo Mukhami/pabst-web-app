@@ -37,8 +37,10 @@ class PendingMatterRequestApprovalReminder extends Notification implements Shoul
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $subject = 'Matter Request Approval Reminder: Client Matter Number - ' . $this->matterRequestApproval->matter_request->ppg_client_matter_no;
+        $subject .= ' PPG Ref - ' . $this->matterRequestApproval->matter_request->ppg_ref;
         return (new MailMessage)
-            ->subject('Matter Request Approval Reminder: Client Matter Number -' . $this->matterRequestApproval->matter_request->ppg_client_matter_no)
+            ->subject($subject)
             ->line('The provided matter request needs your attention.')
             ->line('Matter PPG REF: ' . $this->matterRequestApproval->matter_request->ppg_ref)
             ->line('Title of Invention: ' . $this->matterRequestApproval->matter_request->title_of_invention)

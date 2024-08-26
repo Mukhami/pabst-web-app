@@ -37,8 +37,10 @@ class ApprovalRejectedNotification extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $subject = 'Matter Request Approval Rejected: Client Matter Number - ' . $this->matterRequestApproval->matter_request->ppg_client_matter_no;
+        $subject .= ' PPG Ref - ' . $this->matterRequestApproval->matter_request->ppg_ref;
         return (new MailMessage)
-            ->subject('Matter Request Approval Rejected: Client Matter Number -' . $this->matterRequestApproval->matter_request->ppg_client_matter_no)
+            ->subject($subject)
             ->line('The provided matter request has been rejected.')
             ->line('Matter PPG REF: ' . $this->matterRequestApproval->matter_request->ppg_ref)
             ->line('Title of Invention: ' . $this->matterRequestApproval->matter_request->title_of_invention)

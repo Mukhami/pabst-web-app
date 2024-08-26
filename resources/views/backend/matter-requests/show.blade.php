@@ -94,11 +94,11 @@
             <div class="card-body">
                 <div class="row gx-3 mb-3">
                     <div class="col-md-4">
-                        <p class="fw-bold mb-1">{{__('PPG Client Matter Number')}}</p>
+                        <p class="fw-bold mb-1">{{__('PPG Billing Number')}}</p>
                         <p class=" mb-1">{{ $matterRequest->ppg_client_matter_no }}</p>
                     </div>
                     <div class="col-md-4">
-                        <p class="fw-bold mb-1">{{__('PPG Docket Ref')}}</p>
+                        <p class="fw-bold mb-1">{{__('PPG Ref')}}</p>
                         <p class=" mb-1">{{ $matterRequest->ppg_ref }}</p>
                     </div>
                     <div class="col-md-4">
@@ -143,15 +143,15 @@
                 <div class="row gx-3 mb-3 ">
                     <div class="col-md-4">
                         <p class="fw-bold mb-1">{{__('Bar Date')}}</p>
-                        <p class=" mb-1">{{ $matterRequest->bar_date }}</p>
+                        <p class=" mb-1">{{ ($matterRequest->bar_date) ? \Carbon\Carbon::parse($matterRequest->bar_date)->format('d-m-Y') : '--' }}</p>
                     </div>
                     <div class="col-md-4">
                         <p class="fw-bold mb-1">{{__('Goal Date')}}</p>
-                        <p class=" mb-1">{{ $matterRequest->goal_date }}</p>
+                        <p class=" mb-1">{{ ($matterRequest->goal_date) ? \Carbon\Carbon::parse($matterRequest->goal_date)->format('d-m-Y') : '--' }}</p>
                     </div>
                     <div class="col-md-4">
                         <p class="fw-bold mb-1">{{__('Conversion Date')}}</p>
-                        <p class=" mb-1">{{ $matterRequest->conversion_date }}</p>
+                        <p class=" mb-1">{{ ($matterRequest->conversion_date) ? \Carbon\Carbon::parse($matterRequest->conversion_date)->format('d-m-Y') : '--' }}</p>
                     </div>
                 </div>
                 <hr>
@@ -205,7 +205,7 @@
                 <hr>
                 <div class="row gx-3 mb-3">
                     <div class="col-md-12">
-                        <p class="fw-bold mb-1">{{__('If a conflict search is not needed, please explain why')}}</p>
+                        <p class="fw-bold mb-1">{{__('Matter & Conflicts Notes')}}</p>
                         <p class=" mb-1">{{ $matterRequest->conflict_search_needed_explanation }}</p>
                     </div>
                 </div>

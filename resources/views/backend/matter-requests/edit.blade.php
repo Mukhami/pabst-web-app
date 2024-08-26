@@ -15,8 +15,8 @@
                     <!-- Form Row  -->
                     <div class="row gx-3 mb-3">
                         <div class="col-md-4">
-                            <label class="small mb-1" for="ppg_client_matter_no">{{__('PPG Client Matter Number')}} <span class="text-danger">*</span></label>
-                            <input required class="form-control @error('ppg_client_matter_no') is-invalid @enderror" id="ppg_client_matter_no" type="text" placeholder="Enter PPG Client Matter Number" value="{{ old('ppg_client_matter_no', $matterRequest->ppg_client_matter_no) }}" name="ppg_client_matter_no"/>
+                            <label class="small mb-1" for="ppg_client_matter_no">{{__('PPG Billing Number')}} <span class="text-danger">*</span></label>
+                            <input required class="form-control @error('ppg_client_matter_no') is-invalid @enderror" id="ppg_client_matter_no" type="text" placeholder="Enter PPG Billing Number" value="{{ old('ppg_client_matter_no', $matterRequest->ppg_client_matter_no) }}" name="ppg_client_matter_no"/>
                             <small>{{__('Accepted format: [ClientID]/[MatterID], e.g., 012345/67890')}}</small>
                             @error('ppg_client_matter_no')
                             <div class="text-sm text-danger">
@@ -25,8 +25,8 @@
                             @enderror
                         </div>
                         <div class="col-md-4">
-                            <label class="small mb-1" for="ppg_ref">{{__('PPG Docket Ref')}} <span class="text-danger">*</span></label>
-                            <input required class="form-control @error('ppg_ref') is-invalid @enderror" id="ppg_ref" type="text" placeholder="Enter PPG Docket Ref" value="{{ old('ppg_ref', $matterRequest->ppg_ref) }}" name="ppg_ref"/>
+                            <label class="small mb-1" for="ppg_ref">{{__('PPG Ref')}} <span class="text-danger">*</span></label>
+                            <input required class="form-control @error('ppg_ref') is-invalid @enderror" id="ppg_ref" type="text" placeholder="Enter PPG Ref" value="{{ old('ppg_ref', $matterRequest->ppg_ref) }}" name="ppg_ref"/>
                             @error('ppg_ref')
                             <div class="text-sm text-danger">
                                 {{ $message }}
@@ -126,8 +126,8 @@
 
                     <div class="row gx-3 mb-3">
                         <div class="col-md-4">
-                            <label class="small mb-1" for="ppg_client_matter_no">{{__('Bar Date')}} <span class="text-danger">*</span></label>
-                            <input required class="form-control @error('bar_date') is-invalid @enderror" id="bar_date" type="date" placeholder="Enter Bar Date" value="{{ old('bar_date', $matterRequest->bar_date) }}" name="bar_date"/>
+                            <label class="small mb-1" for="bar_date">{{__('Bar Date')}} </label>
+                            <input class="form-control @error('bar_date') is-invalid @enderror" id="bar_date" type="date" placeholder="Enter Bar Date" value="{{ old('bar_date', $matterRequest->bar_date) }}" name="bar_date"/>
                             @error('bar_date')
                             <div class="text-sm text-danger">
                                 {{ $message }}
@@ -248,7 +248,7 @@
 
                     <div class="row gx-3 mb-3">
                         <div class="col-md-12">
-                            <label class="small mb-1" for="conflict_search_needed_explanation">{{__('If a conflict search is not needed, please explain why')}}</label>
+                            <label class="small mb-1" for="conflict_search_needed_explanation">{{__('Matter & Conflicts Notes')}}</label>
                             <textarea class="form-control @error('conflict_search_needed_explanation') is-invalid @enderror" id="conflict_search_needed_explanation" name="conflict_search_needed_explanation" rows="5">{{ old('conflict_search_needed_explanation', $matterRequest->conflict_search_needed_explanation) }}</textarea>
                             @error('conflict_search_needed_explanation')
                             <div class="text-sm text-danger">

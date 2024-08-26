@@ -1,7 +1,7 @@
 <x-mail::message>
 # Matter Request Approved
 
-**PPG Client Matter Number:** {{ $matterRequest->ppg_client_matter_no }}
+**PPG Billing Number:** {{ $matterRequest->ppg_client_matter_no }}
 
 **PPG Reference:** {{ $matterRequest->ppg_ref }}
 

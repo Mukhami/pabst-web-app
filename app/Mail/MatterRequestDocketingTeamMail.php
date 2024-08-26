@@ -32,9 +32,11 @@ class MatterRequestDocketingTeamMail extends Mailable implements ShouldQueue
      */
     public function envelope(): Envelope
     {
+        $subject = 'Matter Request Approved: Client Matter Number - ' . $this->matterRequest->ppg_client_matter_no;
+        $subject .= ' PPG Ref - ' . $this->matterRequest->ppg_ref;
         return new Envelope(
             from: new Address('noreply@alamaworks.com', 'Mkenga Mail Notifications'),
-            subject: 'Matter Request Approved: Client Matter Number -' . $this->matterRequest->ppg_client_matter_no
+            subject: $subject
         );
     }
 

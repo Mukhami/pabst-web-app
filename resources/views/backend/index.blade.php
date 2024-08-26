@@ -83,8 +83,8 @@
                         <th>#</th>
                         <th>Resp. Attorney</th>
                         <th>Conductor</th>
-                        <th>Matter No.</th>
-                        <th>PPG Docket Ref</th>
+                        <th>PPG Billing No.</th>
+                        <th>PPG Ref</th>
                         <th>Client Name</th>
                         <th>Status</th>
                         <th>Date Created</th>
@@ -96,8 +96,8 @@
                         <th>#</th>
                         <th>Resp. Attorney</th>
                         <th>Conductor</th>
-                        <th>Matter No.</th>
-                        <th>PPG Docket Ref</th>
+                        <th>PPG Billing No.</th>
+                        <th>PPG Ref</th>
                         <th>Client Name</th>
                         <th>Status</th>
                         <th>Date Created</th>

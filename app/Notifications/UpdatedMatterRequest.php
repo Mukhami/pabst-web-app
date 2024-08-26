@@ -37,8 +37,10 @@ class UpdatedMatterRequest extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $subject = 'Updated Matter Request Assignment: Client Matter Number - ' . $this->matterRequest->ppg_client_matter_no;
+        $subject .= ' PPG Ref - ' . $this->matterRequest->ppg_ref;
         return (new MailMessage)
-            ->subject('Updated Matter Request Assignment: Client Matter Number -' . $this->matterRequest->ppg_client_matter_no)
+            ->subject($subject)
             ->line('Your assigned Matter Request has been updated successfully.')
             ->line('Matter PPG REF: ' . $this->matterRequest->ppg_ref)
             ->line('Title of Invention: ' . $this->matterRequest->title_of_invention)
