@@ -79,7 +79,6 @@ class MatterRequestController extends Controller
     {
         $validatedData = $request->validated();
 
-
         // If not saving as a draft, validate crucial fields
         if (!$request->input('save_as_draft') || $request->input('save_as_draft') !== 'true') {
             $requiredFields = [
@@ -279,6 +278,24 @@ class MatterRequestController extends Controller
     public function update(UpdateMatterRequestRequest $request, MatterRequest $matterRequest): RedirectResponse
     {
         $validatedData = $request->validated();
+        // If not saving as a draft, validate crucial fields
+        if (!$request->input('save_as_draft') || $request->input('save_as_draft') !== 'true') {
+            $requiredFields = [
+                'conflict_user_id' => 'Please select a conflict user to initiate approvals.',
+                'partner_id' => 'Please select a partner.',
+                'secondary_partner_id' => 'Please select a secondary partner.'
+            ];
+
+            foreach ($requiredFields as $field => $errorMessage) {
+                if ($request->input($field) === null) {
+                    return Redirect::back()
+                        ->withInput()
+                        ->withErrors([$field => $errorMessage])
+                        ->with('warning', 'Kindly fill in all the required fields before submitting the Matter Request.');
+                }
+            }
+        }
+
         $matterRequest->fill($validatedData);
         $matterRequest->renewal_fees_handled_elsewhere = $request->input('renewal_fees_handled_elsewhere') === 'true';
 
