@@ -40,7 +40,7 @@ class StoreMatterRequestRequest extends FormRequest
             'matter_type_id' => 'required|exists:matter_types,id',
             'sub_type_id' => 'nullable|exists:matter_sub_types,id',
             'bar_date' => 'nullable|date',
-            'goal_date' => 'required|date',
+            'goal_date' => 'nullable|date',
             'conversion_date' => 'nullable|date',
             'inventors' => 'nullable|string',
             'licensees' => 'nullable|string',
@@ -64,6 +64,7 @@ class StoreMatterRequestRequest extends FormRequest
             'conflict_user_id' => 'nullable|exists:users,id',
             'attachments' => 'nullable|array',
             'attachments.*' => 'file|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,txt,rtf,zip,png,jpeg,jpg,csv|max:15360', // 15360 KB = 15 MB
+            'save_as_draft' => 'sometimes|string',
         ];
     }
 }

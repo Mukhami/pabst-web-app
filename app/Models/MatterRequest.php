@@ -14,6 +14,8 @@ class MatterRequest extends Model implements Auditable
 {
     use HasFactory, SoftDeletes, \OwenIt\Auditing\Auditable;
 
+    const STATUS_TYPE_DRAFT = 'DRAFT';
+    const STATUS_TYPE_SUBMITTED = 'SUBMITTED';
     const ENTITY_SIZES = [
 //        'nano',
         'micro',
@@ -52,6 +54,8 @@ class MatterRequest extends Model implements Auditable
         'reviewed_date',
         'conflict_search_needed_explanation',
         'related_cases',
+        'status',
+        'approval_flow_started'
 //        'responsible_attorney_id',
 //        'additional_staff_id',
     ];

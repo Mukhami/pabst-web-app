@@ -25,8 +25,8 @@
                             @enderror
                         </div>
                         <div class="col-md-4">
-                            <label class="small mb-1" for="ppg_ref">{{__('PPG Ref')}} <span class="text-danger">*</span></label>
-                            <input required class="form-control @error('ppg_ref') is-invalid @enderror" id="ppg_ref" type="text" placeholder="Enter PPG Ref" value="{{ old('ppg_ref', $matterRequest->ppg_ref) }}" name="ppg_ref"/>
+                            <label class="small mb-1" for="ppg_ref">{{__('PPG Ref')}} </label>
+                            <input class="form-control @error('ppg_ref') is-invalid @enderror" id="ppg_ref" type="text" placeholder="Enter PPG Ref" value="{{ old('ppg_ref', $matterRequest->ppg_ref) }}" name="ppg_ref"/>
                             @error('ppg_ref')
                             <div class="text-sm text-danger">
                                 {{ $message }}
@@ -66,8 +66,8 @@
                         </div>
 
                         <div class="col-md-4">
-                            <label class="small mb-1" for="entity_size">{{__('Entity Size')}} <span class="text-danger">*</span></label>
-                            <select required class="form-select @error('entity_size') is-invalid @enderror" id="entity_size" name="entity_size">
+                            <label class="small mb-1" for="entity_size">{{__('Entity Size')}} </label>
+                            <select class="form-select @error('entity_size') is-invalid @enderror" id="entity_size" name="entity_size">
                                 <option value="" selected disabled>Select Entity Size</option>
                                 @foreach($entity_sizes as $entity_size)
                                     <option value="{{ $entity_size }}" {{ (old('entity_size', $matterRequest->entity_size) == $entity_size) ? 'selected' : '' }}>{{  ucfirst($entity_size) }}</option>
@@ -135,8 +135,8 @@
                             @enderror
                         </div>
                         <div class="col-md-4">
-                            <label class="small mb-1" for="ppg_ref">{{__('Goal Date')}} <span class="text-danger">*</span></label>
-                            <input required class="form-control @error('goal_date') is-invalid @enderror" id="goal_date" type="date" placeholder="Enter Goal Date" value="{{ old('goal_date', $matterRequest->goal_date) }}" name="goal_date"/>
+                            <label class="small mb-1" for="ppg_ref">{{__('Goal Date')}} </label>
+                            <input class="form-control @error('goal_date') is-invalid @enderror" id="goal_date" type="date" placeholder="Enter Goal Date" value="{{ old('goal_date', $matterRequest->goal_date) }}" name="goal_date"/>
                             @error('goal_date')
                             <div class="text-sm text-danger">
                                 {{ $message }}
@@ -156,8 +156,8 @@
 
                     <div class="row gx-3 mb-3">
                         <div class="col-md-4">
-                            <label class="small mb-1" for="inventors">{{__('Inventors')}} <span class="text-danger">*</span></label>
-                            <input required class="form-control @error('inventors') is-invalid @enderror" id="inventors" type="text" placeholder="Enter Inventors" value="{{ old('inventors', $matterRequest->inventors) }}" name="inventors"/>
+                            <label class="small mb-1" for="inventors">{{__('Inventors')}} </label>
+                            <input class="form-control @error('inventors') is-invalid @enderror" id="inventors" type="text" placeholder="Enter Inventors" value="{{ old('inventors', $matterRequest->inventors) }}" name="inventors"/>
                             @error('inventors')
                             <div class="text-sm text-danger">
                                 {{ $message }}
@@ -174,8 +174,8 @@
                             @enderror
                         </div>
                         <div class="col-md-4">
-                            <label class="small mb-1" for="assignees">{{__('Applicant(s)')}} <span class="text-danger">*</span></label>
-                            <input required class="form-control @error('assignees') is-invalid @enderror" id="assignees" type="text" placeholder="Enter Applicant(s)" value="{{ old('assignees', $matterRequest->assignees) }}" name="assignees"/>
+                            <label class="small mb-1" for="assignees">{{__('Applicant(s)')}} </label>
+                            <input class="form-control @error('assignees') is-invalid @enderror" id="assignees" type="text" placeholder="Enter Applicant(s)" value="{{ old('assignees', $matterRequest->assignees) }}" name="assignees"/>
                             @error('assignees')
                             <div class="text-sm text-danger">
                                 {{ $message }}
@@ -236,7 +236,7 @@
                             @enderror
                         </div>
                         <div class="col-md-6">
-                            <label class="small mb-1" for="key_terms_for_conflict_search">{{__('Key Terms for Conflict Search')}} <span class="text-danger">*</span></label>
+                            <label class="small mb-1" for="key_terms_for_conflict_search">{{__('Key Terms for Conflict Search')}} </label>
                             <input  class="form-control @error('key_terms_for_conflict_search') is-invalid @enderror" id="key_terms_for_conflict_search" type="text" placeholder="Enter Key Terms for Conflict Search" value="{{ old('key_terms_for_conflict_search', $matterRequest->key_terms_for_conflict_search) }}" name="key_terms_for_conflict_search"/>
                             @error('key_terms_for_conflict_search')
                             <div class="text-sm text-danger">
@@ -298,8 +298,8 @@
                             @enderror
                         </div>
                         <div class="col-md-4">
-                            <label class="small mb-1" for="sub_type_id">{{__('Additional Staff')}} <span class="text-danger">*</span></label>
-                            <select required class="form-select @error('additional_staff_id') is-invalid @enderror" id="additional_staff_id" name="additional_staff_id">
+                            <label class="small mb-1" for="sub_type_id">{{__('Additional Staff')}} </label>
+                            <select class="form-select @error('additional_staff_id') is-invalid @enderror" id="additional_staff_id" name="additional_staff_id">
                                 <option value="" selected disabled>Select Matter Type</option>
                                 @foreach($staff as $member)
                                     <option value="{{ $member->id }}" {{ (old('additional_staff_id', $matterRequest->additional_staff_id) == $member->id) ? 'selected' : '' }}>{{ $member->name }}</option>
@@ -327,8 +327,8 @@
 
                     <div class="row gx-3 mb-3">
                         <div class="col-md-4">
-                            <label class="small mb-1" for="partner_id">{{__('Partner')}} <span class="text-danger">*</span></label>
-                            <select required class="form-select @error('partner_id') is-invalid @enderror" id="partner_id" name="partner_id">
+                            <label class="small mb-1" for="partner_id">{{__('Partner')}} </label>
+                            <select class="form-select @error('partner_id') is-invalid @enderror" id="partner_id" name="partner_id">
                                 <option value="" selected disabled>Select Partner</option>
                                 @foreach($partners as $partner)
                                     <option value="{{ $partner->id }}" {{ (old('partner_id', $matterRequest->partner_id) == $partner->id) ? 'selected' : '' }}>{{ $partner->name }}</option>
@@ -342,8 +342,8 @@
                         </div>
 
                         <div class="col-md-4">
-                            <label class="small mb-1" for="secondary_partner_id">{{__('Secondary Partner')}} <span class="text-danger">*</span></label>
-                            <select required class="form-select @error('secondary_partner_id') is-invalid @enderror" id="secondary_partner_id" name="secondary_partner_id">
+                            <label class="small mb-1" for="secondary_partner_id">{{__('Secondary Partner')}} </label>
+                            <select class="form-select @error('secondary_partner_id') is-invalid @enderror" id="secondary_partner_id" name="secondary_partner_id">
                                 <option value="" selected disabled>Select Partner</option>
                                 @foreach($partners as $partner)
                                     <option value="{{ $partner->id }}" {{ (old('secondary_partner_id', $matterRequest->secondary_partner_id) == $partner->id) ? 'selected' : '' }}>{{ $partner->name }}</option>
@@ -357,8 +357,8 @@
                         </div>
 
                         <div class="col-md-4">
-                            <label class="small mb-1" for="conflict_user_id">{{__('Conflicts')}} <span class="text-danger">*</span></label>
-                            <select required class="form-select @error('conflict_user_id') is-invalid @enderror" id="conflict_user_id" name="conflict_user_id">
+                            <label class="small mb-1" for="conflict_user_id">{{__('Conflicts')}} </label>
+                            <select class="form-select @error('conflict_user_id') is-invalid @enderror" id="conflict_user_id" name="conflict_user_id">
                                 <option value="" selected disabled>Select Matter Type</option>
                                 @foreach($conflict as $member)
                                     <option value="{{ $member->id }}" {{ (old('conflict_user_id', $matterRequest->conflict_user_id) == $member->id) ? 'selected' : '' }}>{{ $member->name }}</option>
@@ -372,9 +372,13 @@
                         </div>
                     </div>
 
-
                     <!-- Save changes button-->
-                    <button class="btn btn-primary mr-2" type="submit">{{__('Save changes')}}</button>
+                    @if($matterRequest->status === \App\Models\MatterRequest::STATUS_TYPE_DRAFT && !$matterRequest->approval_flow_started)
+                        <button class="btn btn-warning mr-2" type="submit" name="save_as_draft" value="true">{{__('Save As Draft')}}</button>
+                        <button class="btn btn-primary mr-2" type="submit">{{__('Save As Submitted')}}</button>
+                    @else
+                        <button class="btn btn-primary mr-2" type="submit">{{__('Save Changes')}}</button>
+                    @endif
                     <a class="btn btn-danger" href="{{ route('matter-requests.index') }}">{{__('Cancel')}}</a>
                 </form>
             </div>

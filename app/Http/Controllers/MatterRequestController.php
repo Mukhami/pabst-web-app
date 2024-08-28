@@ -78,6 +78,26 @@ class MatterRequestController extends Controller
     public function store(StoreMatterRequestRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
+
+
+        // If not saving as a draft, validate crucial fields
+        if (!$request->input('save_as_draft') || $request->input('save_as_draft') !== 'true') {
+            $requiredFields = [
+                'conflict_user_id' => 'Please select a conflict user to initiate approvals.',
+                'partner_id' => 'Please select a partner.',
+                'secondary_partner_id' => 'Please select a secondary partner.'
+            ];
+
+            foreach ($requiredFields as $field => $errorMessage) {
+                if ($request->input($field) === null) {
+                    return Redirect::back()
+                        ->withInput()
+                        ->withErrors([$field => $errorMessage])
+                        ->with('warning', 'Kindly fill in all the required fields before submitting the Matter Request.');
+                }
+            }
+        }
+
         $matterRequest = new MatterRequest();
         $matterRequest->fill($validatedData);
         $matterRequest->renewal_fees_handled_elsewhere = $request->input('renewal_fees_handled_elsewhere') === 'true';
@@ -104,6 +124,15 @@ class MatterRequestController extends Controller
             $matterRequest->conflict_user()->associate($request->input('conflict_user_id'));
         }
 
+        // Check if the form is being saved as a draft
+        if ($request->input('save_as_draft') === 'true') {
+            $matterRequest->status = MatterRequest::STATUS_TYPE_DRAFT;
+            $matterRequest->approval_flow_started = false;
+        } else {
+            $matterRequest->status = MatterRequest::STATUS_TYPE_SUBMITTED;
+            $matterRequest->approval_flow_started = true;
+        }
+
         $matterRequest->save();
 
 
@@ -126,21 +155,25 @@ class MatterRequestController extends Controller
         //$responsibleAttorney = $matterRequest->responsible_attorney;
         //$responsibleAttorney->notify(new NewMatterRequestAssignment($matterRequest));
 
-        //Send Approval request to Conflict User
-        $new_approval = MatterRequestApproval::create([
-            'matter_request_id' => $matterRequest->id,
-            'user_id' => $matterRequest->conflict_user_id,
-            'approval_type' => MatterRequestApproval::TYPE_CONFLICTS_TEAM,
-            'status' => MatterRequestApproval::STATUS_PENDING,
-        ]);
+        if ($matterRequest->status === MatterRequest::STATUS_TYPE_SUBMITTED && $matterRequest->approval_flow_started){
+            //Send Approval request to Conflict User
+            $new_approval = MatterRequestApproval::create([
+                'matter_request_id' => $matterRequest->id,
+                'user_id' => $matterRequest->conflict_user_id,
+                'approval_type' => MatterRequestApproval::TYPE_CONFLICTS_TEAM,
+                'status' => MatterRequestApproval::STATUS_PENDING,
+            ]);
 
-        $new_approval->load('matter_request');
+            $new_approval->load('matter_request');
 
-        $conflictUser = $matterRequest->conflict_user;
+            $conflictUser = $matterRequest->conflict_user;
 
-        Notification::send($conflictUser, new MatterRequestStatusUpdateNotification($new_approval));
+            Notification::send($conflictUser, new MatterRequestStatusUpdateNotification($new_approval));
 
-        return Redirect::route('matter-requests.index')->with('success', "$matterRequest->title_of_invention created successfully, and an Approval request has been sent to $conflictUser->name!");
+            return Redirect::route('matter-requests.index')->with('success', "$matterRequest->title_of_invention created successfully, and an Approval request has been sent to $conflictUser->name!");
+        } else {
+            return Redirect::route('matter-requests.index')->with('success', "$matterRequest->title_of_invention created successfully, and Saved as a DRAFT");
+        }
     }
 
     /**
@@ -269,6 +302,13 @@ class MatterRequestController extends Controller
             $matterRequest->conflict_user()->associate($request->input('conflict_user_id'));
         }
 
+        // Check if the form is being saved as a draft
+        if ($request->input('save_as_draft') === 'true') {
+            $matterRequest->status = MatterRequest::STATUS_TYPE_DRAFT;
+        } else {
+            $matterRequest->status = MatterRequest::STATUS_TYPE_SUBMITTED;
+        }
+
         $matterRequest->save();
 
         if ($request->hasFile('attachments')) {
@@ -290,8 +330,27 @@ class MatterRequestController extends Controller
         //$responsibleAttorney = $matterRequest->responsible_attorney;
         //$responsibleAttorney->notify(new UpdatedMatterRequest($matterRequest));
 
-        return Redirect::route('matter-requests.index')->with('success', "$matterRequest->title_of_invention updated successfully");
+        if ($matterRequest->status === MatterRequest::STATUS_TYPE_SUBMITTED && !$matterRequest->approval_flow_started){
+            $matterRequest->approval_flow_started = true;
+            $matterRequest->save();
+            //Send Approval request to Conflict User
+            $new_approval = MatterRequestApproval::create([
+                'matter_request_id' => $matterRequest->id,
+                'user_id' => $matterRequest->conflict_user_id,
+                'approval_type' => MatterRequestApproval::TYPE_CONFLICTS_TEAM,
+                'status' => MatterRequestApproval::STATUS_PENDING,
+            ]);
 
+            $new_approval->load('matter_request');
+
+            $conflictUser = $matterRequest->conflict_user;
+
+            Notification::send($conflictUser, new MatterRequestStatusUpdateNotification($new_approval));
+
+            return Redirect::route('matter-requests.index')->with('success', "$matterRequest->title_of_invention updated successfully, and an Approval request has been sent to $conflictUser->name!");
+        } else {
+            return Redirect::route('matter-requests.index')->with('success', "$matterRequest->title_of_invention updated successfully");
+        }
     }
 
     /**
@@ -505,7 +564,11 @@ class MatterRequestController extends Controller
                     } elseif ($approval->status === MatterRequestApproval::STATUS_CHANGES_REQUESTED){
                         return '<div class="badge bg-info rounded-pill">Changes Requested</div>';
                     }
-                } else {
+                }
+                elseif ($query->status = MatterRequest::STATUS_TYPE_DRAFT){
+                    return '<div class="badge bg-info rounded-pill">Draft</div>';
+                }
+                else {
                     return '<div class="badge bg-warning rounded-pill">Pending</div>';
                 }
             })

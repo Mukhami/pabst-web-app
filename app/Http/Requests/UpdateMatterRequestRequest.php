@@ -42,7 +42,7 @@ class UpdateMatterRequestRequest extends FormRequest
             'matter_type_id' => 'required|exists:matter_types,id',
             'sub_type_id' => 'nullable|exists:matter_sub_types,id',
             'bar_date' => 'nullable|date',
-            'goal_date' => 'required|date',
+            'goal_date' => 'nullable|date',
             'conversion_date' => 'nullable|date',
             'inventors' => 'nullable|string',
             'licensees' => 'nullable|string',

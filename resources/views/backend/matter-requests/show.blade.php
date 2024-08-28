@@ -26,14 +26,22 @@
 
                     <div class="col-lg-4">
                         <div class="small text-muted mb-2">{{__('Additional Staff Member')}}:</div>
-                        <div class="d-flex align-items-center">
-                            <div class="avatar avatar-lg">
-                                <img class="avatar-img img-fluid" src="https://eu.ui-avatars.com/api/?name={{urlencode($matterRequest->additional_staff->name)}}" alt="" />
+                        @if($matterRequest->additional_staff)
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-lg">
+                                    <img class="avatar-img img-fluid" src="https://eu.ui-avatars.com/api/?name={{urlencode($matterRequest->additional_staff->name)}}" alt="" />
+                                </div>
+                                <div class="ms-3">
+                                    <div class="fs-4 text-dark fw-500">{{ $matterRequest->additional_staff->name}}</div>
+                                </div>
                             </div>
+                        @else
                             <div class="ms-3">
-                                <div class="fs-4 text-dark fw-500">{{ $matterRequest->additional_staff->name }}</div>
+                                <div class="fs-4 text-danger fw-500">{{ __('Additional Staff not Assigned') }}</div>
                             </div>
-                        </div>
+                        @endif
+
+
                     </div>
 
                     <div class="col-lg-4">
