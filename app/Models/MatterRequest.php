@@ -64,8 +64,8 @@ class MatterRequest extends Model implements Auditable
     {
         return [
             'renewal_fees_handled_elsewhere' => 'boolean',
-            'created_at' => 'date:d-m-Y',
-            'updated_at' => 'datetime:d-m-Y h:i:s',
+            'created_at' => 'date:m-d-Y',
+            'updated_at' => 'datetime:m-d-Y h:i:s',
         ];
     }
 

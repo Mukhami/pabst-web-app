@@ -27,8 +27,6 @@
 </head>
 <body>
 <div class="jumbotron">
-{{--    <img width="150" src="{{ asset('img/ppg-logo-white.svg') }}" alt="Logo">--}}
-{{--    <h1 class="text-white">PPG</h1>--}}
     <h1 class="text-white">Matter Request Approved</h1>
 </div>
 
@@ -69,15 +67,15 @@
         </tr>
         <tr>
             <th>Bar Date</th>
-            <td>{{ $matterRequest->bar_date }}</td>
+            <td>{{ ($matterRequest->bar_date) ? \Carbon\Carbon::parse($matterRequest->bar_date)->format('m-d-Y') : '--' }}</td>
         </tr>
         <tr>
             <th>Goal Date</th>
-            <td>{{ $matterRequest->goal_date }}</td>
+            <td>{{ ($matterRequest->goal_date) ? \Carbon\Carbon::parse($matterRequest->goal_date)->format('m-d-Y') : '--' }}</td>
         </tr>
         <tr>
             <th>Conversion Date</th>
-            <td>{{ $matterRequest->conversion_date }}</td>
+            <td>{{ ($matterRequest->conversion_date) ? \Carbon\Carbon::parse($matterRequest->conversion_date)->format('m-d-Y') : '--' }}</td>
         </tr>
         <tr>
             <th>Inventors</th>
@@ -85,15 +83,15 @@
         </tr>
         <tr>
             <th>Responsible Attorney</th>
-            <td>{{ $matterRequest->responsible_attorney->name }}</td>
+            <td>{{ ($matterRequest->responsible_attorney) ? $matterRequest->responsible_attorney->name : '--'}}</td>
         </tr>
         <tr>
             <th>Additional Staff</th>
-            <td>{{ $matterRequest->additional_staff->name }}</td>
+            <td>{{ ($matterRequest->additional_staff) ? $matterRequest->additional_staff->name : '--' }}</td>
         </tr>
         <tr>
             <th>Conducted By</th>
-            <td>{{ $matterRequest->conductor->name }}</td>
+            <td>{{ ($matterRequest->conductor) ? $matterRequest->conductor->name : '--' }}</td>
         </tr>
         <tr>
             <th>Licensees</th>
@@ -125,11 +123,11 @@
         </tr>
         <tr>
             <th>Conducted By</th>
-            <td>{{ $matterRequest->conductor->name }}</td>
+            <td>{{ ($matterRequest->conductor) ? $matterRequest->conductor->name : '--' }}</td>
         </tr>
         <tr>
             <th>Conducted Date</th>
-            <td>{{ $matterRequest->conducted_date }}</td>
+            <td>{{ ($matterRequest->conducted_date) ? \Carbon\Carbon::parse($matterRequest->conducted_date)->format('m-d-Y') : '--' }}</td>
         </tr>
         <tr>
             <th>Conflict Search Needed Explanation</th>
@@ -161,7 +159,7 @@
                 <td>{{ ucwords(str_replace('_', ' ', $approval->approval_type)) }}</td>
                 <td>{{  ucwords(str_replace('_', ' ', $approval->status)) }}</td>
                 <td>{{ $approval->remarks }}</td>
-                <td>{{ $approval->created_at->format('d-m-Y H:i:s') }}</td>
+                <td>{{ $approval->created_at->format('m-d-Y H:i:s') }}</td>
             </tr>
         @endforeach
         </tbody>

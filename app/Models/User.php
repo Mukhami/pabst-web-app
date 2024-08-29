@@ -46,8 +46,8 @@ class User extends Authenticatable implements Auditable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'created_at' => 'datetime:Y-m-d h:i:s',
-            'updated_at' => 'datetime:Y-m-d h:i:s',
+            'created_at' => 'datetime:m-d-Y h:i:s',
+            'updated_at' => 'datetime:m-d-Y h:i:s',
         ];
     }
 

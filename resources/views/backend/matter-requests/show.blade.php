@@ -151,15 +151,15 @@
                 <div class="row gx-3 mb-3 ">
                     <div class="col-md-4">
                         <p class="fw-bold mb-1">{{__('Bar Date')}}</p>
-                        <p class=" mb-1">{{ ($matterRequest->bar_date) ? \Carbon\Carbon::parse($matterRequest->bar_date)->format('d-m-Y') : '--' }}</p>
+                        <p class=" mb-1">{{ ($matterRequest->bar_date) ? \Carbon\Carbon::parse($matterRequest->bar_date)->format('m-d-Y') : '--' }}</p>
                     </div>
                     <div class="col-md-4">
                         <p class="fw-bold mb-1">{{__('Goal Date')}}</p>
-                        <p class=" mb-1">{{ ($matterRequest->goal_date) ? \Carbon\Carbon::parse($matterRequest->goal_date)->format('d-m-Y') : '--' }}</p>
+                        <p class=" mb-1">{{ ($matterRequest->goal_date) ? \Carbon\Carbon::parse($matterRequest->goal_date)->format('m-d-Y') : '--' }}</p>
                     </div>
                     <div class="col-md-4">
                         <p class="fw-bold mb-1">{{__('Conversion Date')}}</p>
-                        <p class=" mb-1">{{ ($matterRequest->conversion_date) ? \Carbon\Carbon::parse($matterRequest->conversion_date)->format('d-m-Y') : '--' }}</p>
+                        <p class=" mb-1">{{ ($matterRequest->conversion_date) ? \Carbon\Carbon::parse($matterRequest->conversion_date)->format('m-d-Y') : '--' }}</p>
                     </div>
                 </div>
                 <hr>

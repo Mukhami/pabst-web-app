@@ -36,9 +36,9 @@ class MatterRequestApproval extends Model implements Auditable
     protected function casts(): array
     {
         return [
-            'submitted_at' => 'datetime:Y-m-d h:i:s',
-            'created_at' => 'datetime:Y-m-d h:i:s',
-            'updated_at' => 'datetime:Y-m-d h:i:s',
+            'submitted_at' => 'datetime:m-d-Y h:i:s',
+            'created_at' => 'datetime:m-d-Y h:i:s',
+            'updated_at' => 'datetime:m-d-Y h:i:s',
         ];
     }
 
