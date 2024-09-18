@@ -40,8 +40,6 @@
                                 <div class="fs-4 text-danger fw-500">{{ __('Additional Staff not Assigned') }}</div>
                             </div>
                         @endif
-
-
                     </div>
 
                     <div class="col-lg-4">
@@ -65,7 +63,7 @@
 
                 <div class="row mt-2">
                     <div class="col-lg-4 ">
-                        <div class="small text-muted mb-2">{{__('Secondary Partner')}}:</div>
+                        <div class="small text-muted mb-2">{{__('Partner')}}:</div>
                         @if($matterRequest->partner)
                             <div class="d-flex align-items-center">
                                 <div class="avatar avatar-lg">
@@ -78,6 +76,23 @@
                         @else
                             <div class="ms-3">
                                 <div class="fs-4 text-danger fw-500">{{ __('Partner not Assigned') }}</div>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="col-lg-4 ">
+                        <div class="small text-muted mb-2">{{__('Secondary Partner')}}:</div>
+                        @if($matterRequest->secondary_partner)
+                            <div class="d-flex align-items-center">
+                                <div class="avatar avatar-lg">
+                                    <img class="avatar-img img-fluid" src="https://eu.ui-avatars.com/api/?name={{urlencode($matterRequest->secondary_partner->name)}}" alt="" />
+                                </div>
+                                <div class="ms-3">
+                                    <div class="fs-4 text-dark fw-500">{{ $matterRequest->secondary_partner->name }}</div>
+                                </div>
+                            </div>
+                        @else
+                            <div class="ms-3">
+                                <div class="fs-4 text-danger fw-500">{{ __('Secondary Partner not Assigned') }}</div>
                             </div>
                         @endif
                     </div>
@@ -117,17 +132,13 @@
                 <hr>
 
                 <div class="row gx-3 mb-3">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <p class="fw-bold mb-1">{{__('Client Name')}}</p>
                         <p class=" mb-1">{{ $matterRequest->client_name }}</p>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <p class="fw-bold mb-1">{{__('Client Main Contact')}}</p>
                         <p class=" mb-1">{{ $matterRequest->client_main_contact }}</p>
-                    </div>
-                    <div class="col-md-4">
-                        <p class="fw-bold mb-1">{{__('Client Secondary Contact')}}</p>
-                        <p class=" mb-1">{{ $matterRequest->client_secondary_contacts }}</p>
                     </div>
                 </div>
                 <hr>

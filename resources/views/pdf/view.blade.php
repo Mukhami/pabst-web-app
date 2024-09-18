@@ -54,10 +54,6 @@
             <td>{{ $matterRequest->client_main_contact }}</td>
         </tr>
         <tr>
-            <th>Client Secondary Contacts</th>
-            <td>{{ $matterRequest->client_secondary_contacts }}</td>
-        </tr>
-        <tr>
             <th>Title of Invention</th>
             <td>{{ $matterRequest->title_of_invention }}</td>
         </tr>
