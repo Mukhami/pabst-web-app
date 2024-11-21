@@ -28,6 +28,7 @@ class MatterRequestPendingApprovalReminder extends Command
     public function handle()
     {
         MatterRequestApproval::query()
+            ->whereHas('matter_request')
             ->with(['user', 'matter_request'])
             ->where('status', '=', MatterRequestApproval::STATUS_PENDING)
             ->where('reminder_counter', '<', 5)
