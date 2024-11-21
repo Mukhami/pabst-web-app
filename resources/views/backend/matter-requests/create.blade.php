@@ -258,8 +258,8 @@
                     </div>
                     <div class="row gx-3 mb-3">
                         <div class="col-md-12">
-                            <label class="small mb-1" for="related_cases">{{__('Related Cases (for conflicts or to cross-cite art)')}}</label>
-                            <textarea class="form-control @error('related_cases') is-invalid @enderror" id="related_cases"  name="related_cases" rows="5">{{ old('related_cases') }}</textarea>
+                            <label class="small mb-1" for="related_cases">{{__('Related Cases (for conflicts or to cross-cite art)')}} <span class="text-danger">*</span></label>
+                            <textarea class="form-control @error('related_cases') is-invalid @enderror" id="related_cases"  name="related_cases" required rows="5">{{ old('related_cases') }}</textarea>
                             @error('related_cases')
                             <div class="text-sm text-danger">
                                 {{ $message }}
